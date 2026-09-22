@@ -47,10 +47,7 @@ pass boundaries. It is a small change now and an expensive one after adoption.
 models/      Tamarin theories (.spthy) and the E2EQSS proof oracle
 traces/      Captured prover output, and exported attack traces (.dot/.png)
 poc/         Walkthroughs of the three attack findings
-paper/       Write-up
-references/  Source papers and standards (not redistributed; see .gitignore)
 REPORT.md    Verification report, the disclosure-facing document
-PROGRESS.md  Phase-by-phase log with modelling decisions
 ```
 
 ## Reproducing
@@ -99,8 +96,7 @@ it takes 327 steps.
 Phases 0–4 complete. The verification report is drafted. Remaining steps are
 outward-facing and deliberately left for a human: courtesy notice to the
 proposal authors, then the CCSDS Security Working Group; a Zenodo DOI for the
-models and captured proofs; and a venue decision (see `paper/paper.md` §9.3 —
-Project C targets the same workshop).
+models and captured proofs; and a venue decision.
 
 ## Licence
 
