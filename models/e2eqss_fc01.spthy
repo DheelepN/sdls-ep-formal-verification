@@ -1,0 +1,106 @@
+/*
+  ============================================================================
+  E2EQSS -- minimal isolated model to CONFIRM finding FC-01
+  ============================================================================
+
+  Goal: a concrete Tamarin trace where the adversary learns the hybrid master
+  secret MS with the ML-KEM leg broken (KemReveal), the ECDH leg intact, and no
+  long-term key compromised. This model contains NO ECDH-leg-reveal rule and NO
+  long-term-key-reveal rule, so any trace it produces structurally has the ECDH
+  leg intact and no long-term key compromised.
+
+  Trimmed for tractability to exactly what the attack needs:
+    * an honest MC that emits a valid certificate (which the adversary replays);
+    * a satellite that authenticates the certificate but cannot bind the
+      per-session ephemeral keys to the sender;
+    * the ML-KEM ephemeral leg (c_eph), the ECDH leg (c_dh), and the MC
+      long-term KEM challenge (c_ltMC), combined into
+        MS = KDF(ss_eph, ss_dh, ss_ltMC, th).
+
+  The MC-challenge secret ss_ltMC is the only KDF input bound to a key the
+  adversary does not hold (the honest MC's long-term KEM key); it is obtained
+  via KemReveal -- i.e. exactly where "ML-KEM is broken" is used.
+  ============================================================================
+*/
+
+theory e2eqss_fc01
+begin
+
+builtins: asymmetric-encryption, signing, symmetric-encryption, hashing
+
+functions: kdf/1
+
+rule Register_CA:
+    [ Fr(~skCA) ]
+  --[ OnlyOnce('CA') ]->
+    [ !CA(~skCA), !Pk('CA', pk(~skCA)), Out(pk(~skCA)) ]
+
+rule Register_ltk:
+    [ !CA(skCA), Fr(~kem) ]
+  --[ OnlyOnce($A) ]->
+    [ !Ltk($A, ~kem)
+    , !Pk($A, pk(~kem))
+    , !Cert($A, sign(<'cert', $A, pk(~kem)>, skCA))
+    , Out(pk(~kem)) ]
+
+// The ONLY adversary capability: break the ML-KEM leg.
+rule Reveal_kem_secret:
+    [ !KemSecret(s) ] --[ KemReveal(s) ]-> [ Out(s) ]
+
+// Honest MC: its role in the attack is to place a valid certificate on the net.
+rule MC_1:
+    let eph_pk = pk(~eph_sk)
+        dh_pk  = pk(~dh_sk)
+    in
+    [ !Cert($MC, certMC), Fr(~eph_sk), Fr(~dh_sk) ]
+  --[ StartMC($MC) ]->
+    [ Out(<'M1', certMC, eph_pk, dh_pk>) ]
+
+// Satellite: verifies the certificate, but nothing binds eph_pk/dh_pk to $MC.
+rule SAT_1:
+    let c_eph  = aenc(~ss_eph, eph_pk)
+        c_dh   = aenc(~ss_dh,  dh_pk)
+        c_ltMC = aenc(~ss_ltMC, pkMC)
+        th     = h(<certMC, eph_pk, dh_pk, c_eph, c_dh, c_ltMC>)
+        MS     = kdf(<~ss_eph, ~ss_dh, ~ss_ltMC, th>)
+        conf_s = senc(<'sc', th>, MS)
+    in
+    [ !Cert($SAT, certSAT)
+    , !Pk($MC, pkMC)
+    , !Pk('CA', pkCA)
+    , In(<'M1', certMC, eph_pk, dh_pk>)
+    , Fr(~ss_eph), Fr(~ss_dh), Fr(~ss_ltMC), Fr(~sidS) ]
+  --[ Eq(verify(certMC, <'cert', $MC, pkMC>, pkCA), true)
+    , Honest($SAT), Honest($MC) ]->
+    [ St_SAT_1($SAT, $MC, ~sidS, MS, th)
+    , !KemSecret(~ss_eph)
+    , !KemSecret(~ss_ltMC)
+    , Out(<'M2', c_eph, c_dh, c_ltMC, conf_s>) ]
+
+// Satellite accepts on a valid key confirmation and marks MS secret.
+rule SAT_2:
+    [ St_SAT_1($SAT, $MC, ~sidS, MS, th), In(<'M3', conf_m>) ]
+  --[ Eq(conf_m, senc(<'mc', th>, MS))
+    , AcceptSat($SAT, $MC, MS)
+    , Secret(MS)
+    , Honest($SAT), Honest($MC) ]->
+    [ ]
+
+restriction Equality:
+    "All x y #i. Eq(x, y) @ #i ==> x = y"
+
+restriction OnlyOnce:
+    "All A #i #j. OnlyOnce(A) @ #i & OnlyOnce(A) @ #j ==> #i = #j"
+
+/* FC-01: MS learned by the adversary, ML-KEM leg broken (KemReveal), ECDH leg
+   intact and no long-term key compromised (both by construction: no such
+   rules exist in this model). */
+lemma fc01_kem_broken_dh_survives_attack:
+    exists-trace
+    "Ex SAT MC MS s #i #j #k.
+        AcceptSat(SAT, MC, MS) @ #i
+      & Secret(MS) @ #i
+      & K(MS) @ #j
+      & KemReveal(s) @ #k"
+
+end

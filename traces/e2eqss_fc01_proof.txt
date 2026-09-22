@@ -1,0 +1,12 @@
+maude tool: 'maude'
+ checking version: 3.1. OK.
+ checking installation: OK.
+[Theory e2eqss_fc01] Theory loaded
+[Theory e2eqss_fc01] Theory translated
+[Theory e2eqss_fc01] Derivation checks started
+[Theory e2eqss_fc01] Derivation checks ended
+[Theory e2eqss_fc01] Theory closed
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Done
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Done

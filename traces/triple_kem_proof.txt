@@ -1,0 +1,902 @@
+maude tool: 'maude'
+ checking version: 3.1. OK.
+ checking installation: OK.
+[Theory triple_kem] Theory loaded
+[Theory triple_kem] Theory translated
+[Theory triple_kem] Derivation checks started
+[Theory triple_kem] Derivation checks ended
+[Theory triple_kem] Theory closed
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Done
+theory triple_kem
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: adec/2, aenc/2, fst/1, h/1, kdf/1, pair/2, pk/1, sdec/2,
+           senc/2, snd/1
+equations:
+    adec(aenc(x.1, pk(x.2)), x.2) = x.1,
+    fst(<x.1, x.2>) = x.1,
+    sdec(senc(x.1, x.2), x.2) = x.1,
+    snd(<x.1, x.2>) = x.2
+
+rule (modulo E) Register_ltk:
+   [ Fr( ~ltk ) ]
+  --[ OnlyOnce( $A ) ]->
+   [ !Ltk( $A, ~ltk ), !Pk( $A, pk(~ltk) ), Out( pk(~ltk) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Register_psk:
+   [ Fr( ~psk ) ] --[ PskInit( $MC, $SAT ) ]-> [ !Psk( $MC, $SAT, ~psk ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_ltk:
+   [ !Ltk( $A, ltk ) ] --[ LtkReveal( $A ) ]-> [ Out( ltk ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_psk:
+   [ !Psk( $MC, $SAT, psk ) ] --[ PskReveal( $MC, $SAT ) ]-> [ Out( psk ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) MC_1:
+   [
+   !Ltk( $MC, ltkMC ), !Pk( $SAT, pkSAT ), !Psk( $MC, $SAT, psk ),
+   Fr( ~ss_sat ), Fr( ~ske ), Fr( ~sid )
+   ]
+  --[ StartMC( $MC, $SAT, ~sid ) ]->
+   [
+   St_MC_1( $MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske,
+            aenc(~ss_sat, pkSAT), pk(~ske)
+   ),
+   Out( <'M1', senc(<'pl1', aenc(~ss_sat, pkSAT), pk(~ske)>, psk)> )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) SAT_1:
+   [
+   !Ltk( $SAT, ltkSAT ), !Pk( $MC, pkMC ), !Psk( $MC, $SAT, psk ),
+   In( <'M1', senc(<'pl1', c_sat, pke>, psk)> ), Fr( ~ss_e ), Fr( ~ss_mc ),
+   Fr( ~sidS )
+   ]
+  --[
+  Running( $SAT, $MC,
+           <'SATtoMC', 
+            kdf(<psk, adec(c_sat, ltkSAT), ~ss_e, ~ss_mc, 
+                 h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>), 
+            h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>
+  ),
+  RunningKey( $SAT, $MC,
+              kdf(<psk, adec(c_sat, ltkSAT), ~ss_e, ~ss_mc, 
+                   h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>)
+  ),
+  Honest( $SAT ), Honest( $MC )
+  ]->
+   [
+   St_SAT_1( $SAT, $MC, ~sidS,
+             kdf(<psk, adec(c_sat, ltkSAT), ~ss_e, ~ss_mc, 
+                  h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>),
+             h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>), c_sat, pke,
+             aenc(~ss_e, pke), aenc(~ss_mc, pkMC)
+   ),
+   Out( <'M2', 
+         senc(<'pl2', aenc(~ss_e, pke), aenc(~ss_mc, pkMC), 
+               senc(<'sc', h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>,
+                    kdf(<psk, adec(c_sat, ltkSAT), ~ss_e, ~ss_mc, 
+                         h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>))
+              >,
+              psk)
+        >
+   )
+   ]
+
+  /*
+  rule (modulo AC) SAT_1:
+     [
+     !Ltk( $SAT, ltkSAT ), !Pk( $MC, pkMC ), !Psk( $MC, $SAT, psk ),
+     In( <'M1', senc(<'pl1', c_sat, pke>, psk)> ), Fr( ~ss_e ), Fr( ~ss_mc ),
+     Fr( ~sidS )
+     ]
+    --[
+    Running( $SAT, $MC,
+             <'SATtoMC', 
+              kdf(<psk, z, ~ss_e, ~ss_mc, 
+                   h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>), 
+              h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>
+    ),
+    RunningKey( $SAT, $MC,
+                kdf(<psk, z, ~ss_e, ~ss_mc, 
+                     h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>)
+    ),
+    Honest( $SAT ), Honest( $MC )
+    ]->
+     [
+     St_SAT_1( $SAT, $MC, ~sidS,
+               kdf(<psk, z, ~ss_e, ~ss_mc, 
+                    h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>),
+               h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>), c_sat, pke,
+               aenc(~ss_e, pke), aenc(~ss_mc, pkMC)
+     ),
+     Out( <'M2', 
+           senc(<'pl2', aenc(~ss_e, pke), aenc(~ss_mc, pkMC), 
+                 senc(<'sc', h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>,
+                      kdf(<psk, z, ~ss_e, ~ss_mc, 
+                           h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pkMC)>)>))
+                >,
+                psk)
+          >
+     )
+     ]
+    variants (modulo AC)
+    1. c_sat = c_sat.16
+       ltkSAT
+             = ltkSAT.17
+       z     = adec(c_sat.16, ltkSAT.17)
+    
+    2. c_sat = aenc(z.27, pk(ltkSAT.21))
+       ltkSAT
+             = ltkSAT.21
+       z     = z.27
+  */
+
+rule (modulo E) MC_2:
+   [
+   St_MC_1( $MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke ),
+   In( <'M2', senc(<'pl2', c_e, c_mc, conf_s>, psk)> )
+   ]
+  --[
+  Eq( conf_s,
+      senc(<'sc', h(<c_sat, pke, c_e, c_mc>)>,
+           kdf(<psk, ~ss_sat, adec(c_e, ~ske), adec(c_mc, ltkMC), 
+                h(<c_sat, pke, c_e, c_mc>)>))
+  ),
+  Commit( $MC, $SAT,
+          <'MCtoSAT', 
+           kdf(<psk, ~ss_sat, adec(c_e, ~ske), adec(c_mc, ltkMC), 
+                h(<c_sat, pke, c_e, c_mc>)>), 
+           h(<c_sat, pke, c_e, c_mc>)>
+  ),
+  CommitKey( $MC, $SAT,
+             kdf(<psk, ~ss_sat, adec(c_e, ~ske), adec(c_mc, ltkMC), 
+                  h(<c_sat, pke, c_e, c_mc>)>)
+  ),
+  AcceptMC( $MC, $SAT,
+            kdf(<psk, ~ss_sat, adec(c_e, ~ske), adec(c_mc, ltkMC), 
+                 h(<c_sat, pke, c_e, c_mc>)>)
+  ),
+  Secret( kdf(<psk, ~ss_sat, adec(c_e, ~ske), adec(c_mc, ltkMC), 
+               h(<c_sat, pke, c_e, c_mc>)>)
+  ),
+  Honest( $MC ), Honest( $SAT )
+  ]->
+   [
+   Out( <'M3', 
+         senc(<'mc', h(<c_sat, pke, c_e, c_mc>)>,
+              kdf(<psk, ~ss_sat, adec(c_e, ~ske), adec(c_mc, ltkMC), 
+                   h(<c_sat, pke, c_e, c_mc>)>))
+        >
+   ),
+   !SessKey( $MC, $SAT,
+             kdf(<psk, ~ss_sat, adec(c_e, ~ske), adec(c_mc, ltkMC), 
+                  h(<c_sat, pke, c_e, c_mc>)>)
+   )
+   ]
+
+  /*
+  rule (modulo AC) MC_2:
+     [
+     St_MC_1( $MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke ),
+     In( <'M2', senc(<'pl2', c_e, c_mc, conf_s>, psk)> )
+     ]
+    --[
+    Eq( conf_s,
+        senc(<'sc', h(<c_sat, pke, c_e, c_mc>)>,
+             kdf(<psk, ~ss_sat, z, z.1, h(<c_sat, pke, c_e, c_mc>)>))
+    ),
+    Commit( $MC, $SAT,
+            <'MCtoSAT', kdf(<psk, ~ss_sat, z, z.1, h(<c_sat, pke, c_e, c_mc>)>), 
+             h(<c_sat, pke, c_e, c_mc>)>
+    ),
+    CommitKey( $MC, $SAT,
+               kdf(<psk, ~ss_sat, z, z.1, h(<c_sat, pke, c_e, c_mc>)>)
+    ),
+    AcceptMC( $MC, $SAT,
+              kdf(<psk, ~ss_sat, z, z.1, h(<c_sat, pke, c_e, c_mc>)>)
+    ),
+    Secret( kdf(<psk, ~ss_sat, z, z.1, h(<c_sat, pke, c_e, c_mc>)>) ),
+    Honest( $MC ), Honest( $SAT )
+    ]->
+     [
+     Out( <'M3', 
+           senc(<'mc', h(<c_sat, pke, c_e, c_mc>)>,
+                kdf(<psk, ~ss_sat, z, z.1, h(<c_sat, pke, c_e, c_mc>)>))
+          >
+     ),
+     !SessKey( $MC, $SAT,
+               kdf(<psk, ~ss_sat, z, z.1, h(<c_sat, pke, c_e, c_mc>)>)
+     )
+     ]
+    variants (modulo AC)
+    1. ~ske  = ~ske.26
+       c_e   = c_e.28
+       c_mc  = c_mc.29
+       ltkMC = ltkMC.32
+       z     = adec(c_e.28, ~ske.26)
+       z.1   = adec(c_mc.29, ltkMC.32)
+    
+    2. ~ske  = ~ske.33
+       c_e   = aenc(z.46, pk(~ske.33))
+       c_mc  = c_mc.36
+       ltkMC = ltkMC.39
+       z     = z.46
+       z.1   = adec(c_mc.36, ltkMC.39)
+    
+    3. ~ske  = ~ske.34
+       c_e   = c_e.36
+       c_mc  = aenc(z.48, pk(ltkMC.40))
+       ltkMC = ltkMC.40
+       z     = adec(c_e.36, ~ske.34)
+       z.1   = z.48
+    
+    4. ~ske  = ~ske.34
+       c_e   = aenc(z.47, pk(~ske.34))
+       c_mc  = aenc(z.48, pk(ltkMC.40))
+       ltkMC = ltkMC.40
+       z     = z.47
+       z.1   = z.48
+  */
+
+rule (modulo E) SAT_2:
+   [
+   St_SAT_1( $SAT, $MC, ~sidS, k, th, c_sat, pke, c_e, c_mc ),
+   In( <'M3', conf_m> )
+   ]
+  --[
+  Eq( conf_m, senc(<'mc', th>, k) ),
+  Commit( $SAT, $MC, <'SATtoMC', k, th> ), CommitKey( $SAT, $MC, k ),
+  AcceptSat( $SAT, $MC, k ), Secret( k ), Honest( $SAT ), Honest( $MC )
+  ]->
+   [ !SessKey( $SAT, $MC, k ) ]
+
+  /* has exactly the trivial AC variant */
+
+restriction Equality:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  */
+
+restriction OnlyOnce:
+  "∀ A #i #j. ((OnlyOnce( A ) @ #i) ∧ (OnlyOnce( A ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ A #i #j. ((OnlyOnce( A ) @ #i) ∧ (OnlyOnce( A ) @ #j)) ⇒ (#i = #j)"
+  */
+
+lemma executable:
+  exists-trace
+  "∃ MC SAT k #a #b.
+    (AcceptMC( MC, SAT, k ) @ #a) ∧ (AcceptSat( SAT, MC, k ) @ #b)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ MC SAT k #a #b.
+  (AcceptMC( MC, SAT, k ) @ #a) ∧ (AcceptSat( SAT, MC, k ) @ #b)"
+*/
+simplify
+solve( St_MC_1( $MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke
+       ) ▶₀ #a )
+  case MC_1
+  solve( St_SAT_1( $SAT, $MC, ~sidS,
+                   kdf(<~psk, ~ss_sat, z, z.1, 
+                        h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>),
+                   th, c_sat, pke, c_e.1, c_mc.1
+         ) ▶₀ #b )
+    case SAT_1
+    solve( !KU( senc(<'pl2', aenc(~ss_e, pk(~ske)), aenc(~ss_mc, pk(~ltk)), 
+                      senc(<'sc', 
+                            h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                               aenc(~ss_mc, pk(~ltk))>)
+                           >,
+                           kdf(<~psk, ~ss_sat, ~ss_e, ~ss_mc, 
+                                h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                                   aenc(~ss_mc, pk(~ltk))>)
+                               >))
+                     >,
+                     ~psk)
+           ) @ #vk.2 )
+      case SAT_1
+      solve( !KU( senc(<'mc', 
+                        h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                           aenc(~ss_mc, pk(~ltk))>)
+                       >,
+                       kdf(<~psk, ~ss_sat, ~ss_e, ~ss_mc, 
+                            h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                               aenc(~ss_mc, pk(~ltk))>)
+                           >))
+             ) @ #vk.5 )
+        case MC_2
+        solve( !KU( senc(<'pl1', aenc(~ss_sat, pk(~ltk.1)), pk(~ske)>, ~psk)
+               ) @ #vk.8 )
+          case MC_1
+          SOLVED // trace found
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma key_secrecy:
+  all-traces
+  "∀ k #i.
+    (Secret( k ) @ #i) ⇒
+    ((¬(∃ #j. K( k ) @ #j)) ∨
+     (∃ A #r. (LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ k #i.
+  (Secret( k ) @ #i)
+ ∧
+  (∃ #j. (K( k ) @ #j)) ∧
+  (∀ A #r. (LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i) ⇒ ⊥)"
+*/
+simplify
+solve( Secret( k ) @ #i )
+  case MC_2
+  solve( St_MC_1( $MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke
+         ) ▶₀ #i )
+    case MC_1
+    solve( !KU( kdf(<~psk, ~ss_sat, z, z.1, 
+                     h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>)
+           ) @ #vk )
+      case c_kdf
+      solve( !KU( ~psk ) @ #vk.5 )
+        case Reveal_psk
+        solve( !KU( ~ss_sat ) @ #vk.7 )
+          case MC_1
+          solve( !KU( ~ltk.1 ) @ #vk.13 )
+            case Reveal_ltk
+            by contradiction /* from formulas */
+          qed
+        qed
+      qed
+    qed
+  qed
+next
+  case SAT_2
+  solve( St_SAT_1( $SAT, $MC, ~sidS, k, th, c_sat, pke, c_e, c_mc ) ▶₀ #i )
+    case SAT_1
+    solve( splitEqs(1) )
+      case split_case_1
+      solve( !KU( kdf(<~psk, adec(c_sat, ~ltk), ~ss_e, ~ss_mc, 
+                       h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pk(~ltk.1))>)>)
+             ) @ #vk )
+        case c_kdf
+        solve( !KU( ~psk ) @ #vk.8 )
+          case Reveal_psk
+          solve( !KU( ~ss_e ) @ #vk.12 )
+            case SAT_1
+            solve( !KU( ~ss_mc ) @ #vk.14 )
+              case SAT_1
+              solve( !KU( ~ltk.1 ) @ #vk.17 )
+                case Reveal_ltk
+                by contradiction /* from formulas */
+              qed
+            qed
+          qed
+        qed
+      qed
+    next
+      case split_case_2
+      solve( !KU( kdf(<~psk, z, ~ss_e, ~ss_mc, 
+                       h(<aenc(z, pk(~ltk)), pke, aenc(~ss_e, pke), aenc(~ss_mc, pk(~ltk.1))>)>)
+             ) @ #vk )
+        case c_kdf
+        solve( !KU( ~psk ) @ #vk.8 )
+          case Reveal_psk
+          solve( !KU( ~ss_e ) @ #vk.12 )
+            case SAT_1
+            solve( !KU( ~ss_mc ) @ #vk.14 )
+              case SAT_1
+              solve( !KU( ~ltk.1 ) @ #vk.17 )
+                case Reveal_ltk
+                by contradiction /* from formulas */
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma forward_secrecy:
+  all-traces
+  "∀ k #i #j.
+    ((Secret( k ) @ #i) ∧ (K( k ) @ #j)) ⇒
+    (∃ A #r. ((LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i)) ∧ (#r < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ k #i #j.
+  (Secret( k ) @ #i) ∧ (K( k ) @ #j)
+ ∧
+  ∀ A #r. (LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i) ⇒ ¬(#r < #i)"
+*/
+simplify
+solve( Secret( k ) @ #i )
+  case MC_2
+  solve( St_MC_1( $MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke
+         ) ▶₀ #i )
+    case MC_1
+    solve( !KU( kdf(<~psk, ~ss_sat, z, z.1, 
+                     h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>)
+           ) @ #vk )
+      case c_kdf
+      solve( !KU( ~psk ) @ #vk.5 )
+        case Reveal_psk
+        solve( !KU( ~ss_sat ) @ #vk.7 )
+          case MC_1
+          solve( !KU( ~ltk.1 ) @ #vk.13 )
+            case Reveal_ltk
+            solve( !KU( h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)
+                   ) @ #vk.13 )
+              case c_h
+              solve( !KU( senc(<'pl2', c_e, c_mc, 
+                                senc(<'sc', h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>,
+                                     kdf(<~psk, ~ss_sat, z, z.1, 
+                                          h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>))
+                               >,
+                               ~psk)
+                     ) @ #vk.9 )
+                case SAT_1
+                solve( !KU( ~ss_e ) @ #vk.16 )
+                  case SAT_1
+                  solve( !KU( ~ss_mc ) @ #vk.17 )
+                    case SAT_1
+                    by solve( !KU( ~ske ) @ #vk.24 )
+                  qed
+                qed
+              next
+                case c_senc
+                solve( !KU( senc(<'sc', 
+                                  h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>,
+                                 kdf(<~psk, ~ss_sat, z, z.1, 
+                                      h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>))
+                       ) @ #vk.25 )
+                  case SAT_1
+                  solve( !KU( ~ss_e ) @ #vk.17 )
+                    case SAT_1
+                    solve( !KU( ~ss_mc ) @ #vk.21 )
+                      case SAT_1
+                      by solve( !KU( ~ske ) @ #vk.29 )
+                    qed
+                  qed
+                next
+                  case c_senc
+                  by contradiction /* cyclic */
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+next
+  case SAT_2
+  solve( St_SAT_1( $SAT, $MC, ~sidS, k, th, c_sat, pke, c_e, c_mc ) ▶₀ #i )
+    case SAT_1
+    solve( splitEqs(1) )
+      case split_case_1
+      solve( !KU( kdf(<~psk, adec(c_sat, ~ltk), ~ss_e, ~ss_mc, 
+                       h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pk(~ltk.1))>)>)
+             ) @ #vk )
+        case c_kdf
+        solve( !KU( ~psk ) @ #vk.8 )
+          case Reveal_psk
+          solve( !KU( ~ss_e ) @ #vk.12 )
+            case SAT_1
+            solve( !KU( ~ss_mc ) @ #vk.14 )
+              case SAT_1
+              solve( !KU( ~ltk.1 ) @ #vk.17 )
+                case Reveal_ltk
+                solve( !KU( adec(c_sat, ~ltk) ) @ #vk.15 )
+                  case c_adec
+                  solve( !KU( ~ltk ) @ #vk.19 )
+                    case Reveal_ltk
+                    solve( !KU( h(<c_sat, pk(x), aenc(~ss_e, pk(x)), aenc(~ss_mc, pk(~ltk.1))
+                                  >)
+                           ) @ #vk.17 )
+                      case c_h
+                      solve( !KU( senc(<'mc', 
+                                        h(<c_sat, pk(x), aenc(~ss_e, pk(x)), aenc(~ss_mc, pk(~ltk.1))>)>,
+                                       kdf(<~psk, adec(c_sat, ~ltk), ~ss_e, ~ss_mc, 
+                                            h(<c_sat, pk(x), aenc(~ss_e, pk(x)), aenc(~ss_mc, pk(~ltk.1))>)>))
+                             ) @ #vk.16 )
+                        case c_senc
+                        by contradiction /* cyclic */
+                      qed
+                    qed
+                  qed
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    next
+      case split_case_2
+      solve( !KU( kdf(<~psk, z, ~ss_e, ~ss_mc, 
+                       h(<aenc(z, pk(~ltk)), pke, aenc(~ss_e, pke), aenc(~ss_mc, pk(~ltk.1))>)>)
+             ) @ #vk )
+        case c_kdf
+        solve( !KU( ~psk ) @ #vk.8 )
+          case Reveal_psk
+          solve( !KU( ~ss_e ) @ #vk.12 )
+            case SAT_1
+            solve( !KU( ~ss_mc ) @ #vk.14 )
+              case SAT_1
+              solve( !KU( ~ltk.1 ) @ #vk.17 )
+                case Reveal_ltk
+                solve( !KU( h(<aenc(z, pk(~ltk)), pk(x), aenc(~ss_e, pk(x)), 
+                               aenc(~ss_mc, pk(~ltk.1))>)
+                       ) @ #vk.16 )
+                  case c_h
+                  solve( !KU( senc(<'mc', 
+                                    h(<aenc(z, pk(~ltk)), pk(x), aenc(~ss_e, pk(x)), aenc(~ss_mc, pk(~ltk.1))
+                                      >)
+                                   >,
+                                   kdf(<~psk, z, ~ss_e, ~ss_mc, 
+                                        h(<aenc(z, pk(~ltk)), pk(x), aenc(~ss_e, pk(x)), 
+                                           aenc(~ss_mc, pk(~ltk.1))>)
+                                       >))
+                         ) @ #vk.13 )
+                    case MC_2
+                    solve( !KU( ~ss_sat ) @ #vk.21 )
+                      case MC_1
+                      by solve( !KU( ~ske ) @ #vk.23 )
+                    qed
+                  next
+                    case c_senc
+                    by contradiction /* cyclic */
+                  qed
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma post_compromise_security:
+  all-traces
+  "∀ k #i.
+    ((Secret( k ) @ #i) ∧ (∃ MC SAT #p. PskReveal( MC, SAT ) @ #p)) ⇒
+    ((¬(∃ #j. K( k ) @ #j)) ∨
+     (∃ A #r. (LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ k #i.
+  (Secret( k ) @ #i)
+ ∧
+  (∃ MC SAT #p. (PskReveal( MC, SAT ) @ #p)) ∧
+  (∃ #j. (K( k ) @ #j)) ∧
+  (∀ A #r. (LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i) ⇒ ⊥)"
+*/
+simplify
+solve( !Psk( $MC, $SAT, psk ) ▶₀ #p )
+  case Register_psk
+  solve( Secret( k ) @ #i )
+    case MC_2
+    solve( St_MC_1( $MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke
+           ) ▶₀ #i )
+      case MC_1
+      solve( !KU( kdf(<~psk, ~ss_sat, z, z.1, 
+                       h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>)
+             ) @ #vk )
+        case c_kdf
+        solve( !KU( ~psk ) @ #vk.5 )
+          case Reveal_psk
+          solve( !KU( ~ss_sat ) @ #vk.7 )
+            case MC_1
+            solve( !KU( ~ltk.1 ) @ #vk.13 )
+              case Reveal_ltk
+              by contradiction /* from formulas */
+            qed
+          qed
+        qed
+      qed
+    qed
+  next
+    case SAT_2
+    solve( St_SAT_1( $SAT, $MC, ~sidS, k, th, c_sat, pke, c_e, c_mc ) ▶₀ #i )
+      case SAT_1
+      solve( splitEqs(2) )
+        case split_case_1
+        solve( !KU( kdf(<~psk, adec(c_sat, ~ltk), ~ss_e, ~ss_mc, 
+                         h(<c_sat, pke, aenc(~ss_e, pke), aenc(~ss_mc, pk(~ltk.1))>)>)
+               ) @ #vk )
+          case c_kdf
+          solve( !KU( ~psk ) @ #vk.8 )
+            case Reveal_psk
+            solve( !KU( ~ss_e ) @ #vk.12 )
+              case SAT_1
+              solve( !KU( ~ss_mc ) @ #vk.14 )
+                case SAT_1
+                solve( !KU( ~ltk.1 ) @ #vk.17 )
+                  case Reveal_ltk
+                  by contradiction /* from formulas */
+                qed
+              qed
+            qed
+          qed
+        qed
+      next
+        case split_case_2
+        solve( !KU( kdf(<~psk, z, ~ss_e, ~ss_mc, 
+                         h(<aenc(z, pk(~ltk)), pke, aenc(~ss_e, pke), aenc(~ss_mc, pk(~ltk.1))>)>)
+               ) @ #vk )
+          case c_kdf
+          solve( !KU( ~psk ) @ #vk.8 )
+            case Reveal_psk
+            solve( !KU( ~ss_e ) @ #vk.12 )
+              case SAT_1
+              solve( !KU( ~ss_mc ) @ #vk.14 )
+                case SAT_1
+                solve( !KU( ~ltk.1 ) @ #vk.17 )
+                  case Reveal_ltk
+                  by contradiction /* from formulas */
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma mutual_authentication_MC:
+  all-traces
+  "∀ MC SAT k th #i.
+    (Commit( MC, SAT, <'MCtoSAT', k, th> ) @ #i) ⇒
+    ((∃ #j.
+       ((Running( SAT, MC, <'SATtoMC', k, th> ) @ #j) ∧ (#j < #i)) ∧
+       (¬(∃ MC2 SAT2 #i2.
+           (Commit( MC2, SAT2, <'MCtoSAT', k, th> ) @ #i2) ∧ (¬(#i2 = #i))))) ∨
+     (∃ A #r. ((LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i)) ∧ (#r < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ MC SAT k th #i.
+  (Commit( MC, SAT, <'MCtoSAT', k, th> ) @ #i)
+ ∧
+  (∀ #j.
+    (Running( SAT, MC, <'SATtoMC', k, th> ) @ #j)
+   ⇒
+    ((¬(#j < #i)) ∨
+     (∃ MC2 SAT2 #i2.
+       (Commit( MC2, SAT2, <'MCtoSAT', k, th> ) @ #i2) ∧ ¬(#i2 = #i)))) ∧
+  (∀ A #r. (LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i) ⇒ ¬(#r < #i))"
+*/
+simplify
+solve( Commit( MC, SAT, <'MCtoSAT', k, th> ) @ #i )
+  case MC_2
+  solve( St_MC_1( $MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke
+         ) ▶₀ #i )
+    case MC_1
+    solve( !KU( senc(<'pl2', c_e, c_mc, 
+                      senc(<'sc', h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>,
+                           kdf(<~psk, ~ss_sat, z, z.1, 
+                                h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>))
+                     >,
+                     ~psk)
+           ) @ #vk.2 )
+      case SAT_1
+      solve( (#i2 < #i)  ∥ (#i < #i2) )
+        case case_1
+        solve( Commit( MC2, SAT2,
+                       <'MCtoSAT', 
+                        kdf(<~psk, ~ss_sat, ~ss_e, ~ss_mc, 
+                             h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                                aenc(~ss_mc, pk(~ltk))>)
+                            >), 
+                        h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                           aenc(~ss_mc, pk(~ltk))>)
+                       >
+               ) @ #i2 )
+          case MC_2
+          solve( St_MC_1( $MC.1, $SAT.1, ~sid.1, ~ltk, ~psk, ~ss_sat, ~ske,
+                          aenc(~ss_sat, pk(~ltk.1)), pk(~ske)
+                 ) ▶₀ #i2 )
+            case MC_1
+            by contradiction /* cyclic */
+          qed
+        qed
+      next
+        case case_2
+        solve( Commit( MC2, SAT2,
+                       <'MCtoSAT', 
+                        kdf(<~psk, ~ss_sat, ~ss_e, ~ss_mc, 
+                             h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                                aenc(~ss_mc, pk(~ltk))>)
+                            >), 
+                        h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                           aenc(~ss_mc, pk(~ltk))>)
+                       >
+               ) @ #i2 )
+          case MC_2
+          solve( St_MC_1( $MC.1, $SAT.1, ~sid.1, ~ltk, ~psk, ~ss_sat, ~ske,
+                          aenc(~ss_sat, pk(~ltk.1)), pk(~ske)
+                 ) ▶₀ #i2 )
+            case MC_1
+            by contradiction /* cyclic */
+          qed
+        qed
+      qed
+    next
+      case c_senc
+      solve( !KU( ~psk ) @ #vk.4 )
+        case Reveal_psk
+        solve( !KU( senc(<'sc', 
+                          h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>,
+                         kdf(<~psk, ~ss_sat, z, z.1, 
+                              h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>))
+               ) @ #vk.10 )
+          case SAT_1
+          solve( (#i2 < #i)  ∥ (#i < #i2) )
+            case case_1
+            solve( Commit( MC2, SAT2,
+                           <'MCtoSAT', 
+                            kdf(<~psk, ~ss_sat, ~ss_e, ~ss_mc, 
+                                 h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                                    aenc(~ss_mc, pk(~ltk))>)
+                                >), 
+                            h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                               aenc(~ss_mc, pk(~ltk))>)
+                           >
+                   ) @ #i2 )
+              case MC_2
+              solve( St_MC_1( $MC.1, $SAT.1, ~sid.1, ~ltk, ~psk, ~ss_sat, ~ske,
+                              aenc(~ss_sat, pk(~ltk.1)), pk(~ske)
+                     ) ▶₀ #i2 )
+                case MC_1
+                by contradiction /* cyclic */
+              qed
+            qed
+          next
+            case case_2
+            solve( Commit( MC2, SAT2,
+                           <'MCtoSAT', 
+                            kdf(<~psk, ~ss_sat, ~ss_e, ~ss_mc, 
+                                 h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                                    aenc(~ss_mc, pk(~ltk))>)
+                                >), 
+                            h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), aenc(~ss_e, pk(~ske)), 
+                               aenc(~ss_mc, pk(~ltk))>)
+                           >
+                   ) @ #i2 )
+              case MC_2
+              solve( St_MC_1( $MC.1, $SAT.1, ~sid.1, ~ltk, ~psk, ~ss_sat, ~ske,
+                              aenc(~ss_sat, pk(~ltk.1)), pk(~ske)
+                     ) ▶₀ #i2 )
+                case MC_1
+                by contradiction /* cyclic */
+              qed
+            qed
+          qed
+        next
+          case c_senc
+          solve( !KU( kdf(<~psk, ~ss_sat, z, z.1, 
+                           h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>)
+                 ) @ #vk.12 )
+            case c_kdf
+            solve( !KU( ~ss_sat ) @ #vk.18 )
+              case MC_1
+              solve( !KU( ~ltk.1 ) @ #vk.22 )
+                case Reveal_ltk
+                by contradiction /* from formulas */
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma key_agreement:
+  all-traces
+  "∀ MC SAT k #i.
+    (AcceptMC( MC, SAT, k ) @ #i) ⇒
+    ((∃ #j. RunningKey( SAT, MC, k ) @ #j) ∨
+     (∃ A #r. ((LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i)) ∧ (#r < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ MC SAT k #i.
+  (AcceptMC( MC, SAT, k ) @ #i)
+ ∧
+  (∀ #j. (RunningKey( SAT, MC, k ) @ #j) ⇒ ⊥) ∧
+  (∀ A #r. (LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i) ⇒ ¬(#r < #i))"
+*/
+simplify
+solve( St_MC_1( $MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke
+       ) ▶₀ #i )
+  case MC_1
+  solve( !KU( senc(<'pl2', c_e, c_mc, 
+                    senc(<'sc', h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>,
+                         kdf(<~psk, ~ss_sat, z, z.1, 
+                              h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>))
+                   >,
+                   ~psk)
+         ) @ #vk.2 )
+    case SAT_1
+    by contradiction /* from formulas */
+  next
+    case c_senc
+    solve( !KU( ~psk ) @ #vk.4 )
+      case Reveal_psk
+      solve( !KU( senc(<'sc', 
+                        h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>,
+                       kdf(<~psk, ~ss_sat, z, z.1, 
+                            h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>))
+             ) @ #vk.10 )
+        case SAT_1
+        by contradiction /* from formulas */
+      next
+        case c_senc
+        solve( !KU( kdf(<~psk, ~ss_sat, z, z.1, 
+                         h(<aenc(~ss_sat, pk(~ltk.1)), pk(~ske), c_e, c_mc>)>)
+               ) @ #vk.12 )
+          case c_kdf
+          solve( !KU( ~ss_sat ) @ #vk.18 )
+            case MC_1
+            solve( !KU( ~ltk.1 ) @ #vk.22 )
+              case Reveal_ltk
+              by contradiction /* from formulas */
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.1
+Git revision: 82780bbaf3328a45f624ddb41e51bf75425f851c (with uncommited changes), branch: master
+Compiled at: 2026-03-07 14:22:39.174278293 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: triple_kem.spthy
+
+  processing time: 14.33s
+  
+  executable (exists-trace): verified (7 steps)
+  key_secrecy (all-traces): verified (22 steps)
+  forward_secrecy (all-traces): verified (39 steps)
+  post_compromise_security (all-traces): verified (23 steps)
+  mutual_authentication_MC (all-traces): verified (24 steps)
+  key_agreement (all-traces): verified (11 steps)
+
+==============================================================================

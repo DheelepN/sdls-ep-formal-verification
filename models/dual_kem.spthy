@@ -1,0 +1,168 @@
+/*
+  ============================================================================
+  Dual-KEM key-update mechanism for SDLS  (Hulsing, Lange, Weber, CANS 2025)
+  ============================================================================
+
+  Dual-KEM is Triple-KEM with the challenge to the responder's long-term key
+  (c_sat) removed. The paper states plainly that Dual-KEM "does not itself
+  guarantee any authenticity of the responder" and must only be used where the
+  responder's authenticity is guaranteed out of band (e.g. by the ground
+  station rather than mission control).
+
+  This model does NOT assume that out-of-band authentication. Its purpose is to
+  make precise, mechanically, what Dual-KEM loses relative to Triple-KEM:
+
+    * With a secret psk, the flights are protected and the key is safe.
+    * Once the psk is revealed (exactly the post-compromise scenario), the
+      responder's long-term key no longer contributes to the derived key.
+      The Dolev-Yao adversary can encapsulate to the public keys itself and
+      impersonate the satellite, so the key MC derives is shared with the
+      adversary and post-compromise security is lost.
+
+  Messages:
+    M1  MC -> SAT :  AEAD_psk( pk_e )
+    M2  SAT-> MC  :  AEAD_psk( c_e , c_mc , confirm_sat )
+    M3  MC -> SAT :  confirm_mc
+
+    c_e  = Encap(pk_e)     -- ephemeral encapsulation
+    c_mc = Encap(pk_mc)    -- challenges MC's long-term key (authenticates MC)
+    th   = H(pk_e, c_e, c_mc)
+    k    = KDF(psk, ss_e, ss_mc, th)          -- note: no ss_sat term
+  ============================================================================
+*/
+
+theory dual_kem
+begin
+
+builtins: asymmetric-encryption, symmetric-encryption, hashing
+
+functions: kdf/1
+
+rule Register_ltk:
+    [ Fr(~ltk) ]
+  --[ OnlyOnce($A) ]->
+    [ !Ltk($A, ~ltk), !Pk($A, pk(~ltk)), Out(pk(~ltk)) ]
+
+rule Register_psk:
+    [ Fr(~psk) ]
+  --[ PskInit($MC, $SAT) ]->
+    [ !Psk($MC, $SAT, ~psk) ]
+
+rule Reveal_ltk:
+    [ !Ltk($A, ltk) ] --[ LtkReveal($A) ]-> [ Out(ltk) ]
+
+rule Reveal_psk:
+    [ !Psk($MC, $SAT, psk) ] --[ PskReveal($MC, $SAT) ]-> [ Out(psk) ]
+
+// M1: MC ships only the ephemeral public key (no challenge to SAT).
+rule MC_1:
+    let pke = pk(~ske)
+        m1  = senc(<'pl1', pke>, psk)
+    in
+    [ !Ltk($MC, ltkMC)
+    , !Pk($SAT, pkSAT)
+    , !Psk($MC, $SAT, psk)
+    , Fr(~ske)
+    , Fr(~sid) ]
+  --[ StartMC($MC, $SAT, ~sid) ]->
+    [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ske, pke)
+    , Out(<'M1', m1>) ]
+
+rule SAT_1:
+    let c_e    = aenc(~ss_e, pke)
+        c_mc   = aenc(~ss_mc, pkMC)
+        th     = h(<pke, c_e, c_mc>)
+        k      = kdf(<psk, ~ss_e, ~ss_mc, th>)
+        conf_s = senc(<'sc', th>, k)
+        m2     = senc(<'pl2', c_e, c_mc, conf_s>, psk)
+    in
+    [ !Ltk($SAT, ltkSAT)
+    , !Pk($MC, pkMC)
+    , !Psk($MC, $SAT, psk)
+    , In(<'M1', senc(<'pl1', pke>, psk)>)
+    , Fr(~ss_e)
+    , Fr(~ss_mc)
+    , Fr(~sidS) ]
+  --[ Running(  $SAT, $MC, <'SATtoMC', k, th> )
+    , RunningKey($SAT, $MC, k)
+    , Honest($SAT), Honest($MC) ]->
+    [ St_SAT_1($SAT, $MC, ~sidS, k, th, pke, c_e, c_mc)
+    , Out(<'M2', m2>) ]
+
+rule MC_2:
+    let th     = h(<pke, c_e, c_mc>)
+        ss_e   = adec(c_e, ~ske)
+        ss_mc  = adec(c_mc, ltkMC)
+        k      = kdf(<psk, ss_e, ss_mc, th>)
+        conf_m = senc(<'mc', th>, k)
+    in
+    [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ske, pke)
+    , In(<'M2', senc(<'pl2', c_e, c_mc, conf_s>, psk)>) ]
+  --[ Eq(conf_s, senc(<'sc', th>, k))
+    , Commit(   $MC, $SAT, <'MCtoSAT', k, th> )
+    , CommitKey($MC, $SAT, k)
+    , AcceptMC( $MC, $SAT, k)
+    , Secret(k)
+    , Honest($MC), Honest($SAT) ]->
+    [ Out(<'M3', conf_m>)
+    , !SessKey($MC, $SAT, k) ]
+
+rule SAT_2:
+    [ St_SAT_1($SAT, $MC, ~sidS, k, th, pke, c_e, c_mc)
+    , In(<'M3', conf_m>) ]
+  --[ Eq(conf_m, senc(<'mc', th>, k))
+    , Commit(   $SAT, $MC, <'SATtoMC', k, th> )
+    , AcceptSat($SAT, $MC, k)
+    , Secret(k)
+    , Honest($SAT), Honest($MC) ]->
+    [ !SessKey($SAT, $MC, k) ]
+
+restriction Equality:
+    "All x y #i. Eq(x, y) @ #i ==> x = y"
+
+restriction OnlyOnce:
+    "All A #i #j. OnlyOnce(A) @ #i & OnlyOnce(A) @ #j ==> #i = #j"
+
+lemma executable:
+    exists-trace
+    "Ex MC SAT k #a #b.
+        AcceptMC(MC, SAT, k) @ #a
+      & AcceptSat(SAT, MC, k) @ #b"
+
+// Initiator authentication is retained: MC is authenticated to SAT through
+// c_mc, so this should still hold.
+lemma initiator_auth_holds:
+    "All SAT MC k th #i.
+        Commit(SAT, MC, <'SATtoMC', k, th>) @ #i
+      ==>
+        ( Ex #j. Running(SAT, MC, <'SATtoMC', k, th>) @ #j )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )
+      | ( Ex M S #p. PskReveal(M, S) @ #p )"
+
+// Responder authentication is expected to FAIL: MC cannot authenticate SAT.
+// Tamarin should falsify this and return an attack trace.
+lemma responder_auth_expected_fail:
+    "All MC SAT k th #i.
+        Commit(MC, SAT, <'MCtoSAT', k, th>) @ #i
+      ==>
+        ( Ex #j. Running(SAT, MC, <'SATtoMC', k, th>) @ #j & #j < #i )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+// Key secrecy WITHOUT allowing psk compromise: should hold.
+lemma key_secrecy_psk_intact:
+    "All k #i.
+        Secret(k) @ #i & not (Ex M S #p. PskReveal(M, S) @ #p)
+      ==>
+        ( not (Ex #j. K(k) @ #j) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i )"
+
+// Post-compromise security: expected to FAIL for Dual-KEM. Once the psk leaks,
+// the unauthenticated responder lets the adversary compute the new key.
+lemma post_compromise_security_expected_fail:
+    "All k #i.
+        Secret(k) @ #i & (Ex MC SAT #p. PskReveal(MC, SAT) @ #p)
+      ==>
+        ( not (Ex #j. K(k) @ #j) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i )"
+
+end

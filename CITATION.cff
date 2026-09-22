@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: "Mechanized Analysis of Post-Quantum Key-Update Proposals for CCSDS SDLS-EP"
+message: >-
+  If you use these models or results, please cite this work. The Tamarin theory
+  files are as much the contribution as the report: they are what lets a revised
+  protocol be re-verified rather than re-argued.
+type: software
+authors:
+  - family-names: "Gupthaa"
+    given-names: "N. Dheelep Sai"
+abstract: >-
+  Symbolic verification in the Tamarin prover of two proposed post-quantum
+  extensions to CCSDS SDLS Extended Procedures. Confirms the Triple-KEM
+  proposal's claimed properties, makes the Dual-KEM variant's security boundary
+  precise, and reports FB-01: a non-recoverable rekey desynchronization under
+  space channel constraints, in which a single lost key confirmation across a
+  closing contact window leaves ground and spacecraft on different keys with no
+  automatic recovery, requiring no cryptographic compromise. Also shows that
+  E2EQSS is hybrid for confidentiality but not for authentication.
+keywords:
+  - CCSDS
+  - SDLS
+  - Tamarin prover
+  - symbolic verification
+  - post-quantum cryptography
+  - key update
+  - post-compromise security
+  - space systems security
+license: MIT

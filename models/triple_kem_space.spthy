@@ -1,0 +1,194 @@
+/*
+  ============================================================================
+  Triple-KEM under a SPACE-SPECIFIC adversary / channel model
+  ============================================================================
+
+  This extends models/triple_kem.spthy with the operational reality of a
+  space data link, which the original computational (BR') proof explicitly
+  does NOT model. The Hulsing-Lange-Weber paper concedes (Sec. 3) that on
+  packet loss or reordering the protocol "needs to assume an attack and drop
+  the connection," deferring reordering/re-request to a lower layer, and the
+  program's threat framing adds two more space facts:
+
+    * one-way pass windows: a spacecraft is reachable only during a pass;
+    * no abort-and-retry: a failed handshake may not be retried at will.
+
+  We model a contact/pass window as a linear !Contact token minted when SAT
+  sends M2 and consumed when SAT processes M3. A pass can end before M3 arrives
+  (rule Pass_ends), destroying the token: SAT can then never complete this
+  session, and there is no retry.
+
+  Security (secrecy / authentication) is inherited from triple_kem.spthy and is
+  unaffected. The space model exposes a LIVENESS / AVAILABILITY property the
+  BR' proof cannot see:
+
+    Rekey atomicity: if MC activates the new key, SAT also activates it.
+
+  Triple-KEM activates the key at MC on sending M3 (MC_2) but at SAT only on
+  receiving M3 (SAT_2), because key confirmation must precede activation. A
+  single lost confirmation across a closing pass window therefore leaves MC on
+  the new key and SAT on the old one, with no automatic recovery: a
+  non-recoverable rekey desynchronisation. We show rekey atomicity is FALSE and
+  give the trace. We also confirm replay resistance holds with NO timing
+  assumption (important because deep-space round trips are minutes to hours).
+  ============================================================================
+*/
+
+theory triple_kem_space
+begin
+
+builtins: asymmetric-encryption, symmetric-encryption, hashing
+
+functions: kdf/1
+
+rule Register_ltk:
+    [ Fr(~ltk) ]
+  --[ OnlyOnce($A) ]->
+    [ !Ltk($A, ~ltk), !Pk($A, pk(~ltk)), Out(pk(~ltk)) ]
+
+rule Register_psk:
+    [ Fr(~psk) ]
+  --[ PskInit($MC, $SAT) ]->
+    [ !Psk($MC, $SAT, ~psk) ]
+
+rule Reveal_ltk:
+    [ !Ltk($A, ltk) ] --[ LtkReveal($A) ]-> [ Out(ltk) ]
+
+rule Reveal_psk:
+    [ !Psk($MC, $SAT, psk) ] --[ PskReveal($MC, $SAT) ]-> [ Out(psk) ]
+
+rule MC_1:
+    let pke   = pk(~ske)
+        c_sat = aenc(~ss_sat, pkSAT)
+        m1    = senc(<'pl1', c_sat, pke>, psk)
+    in
+    [ !Ltk($MC, ltkMC)
+    , !Pk($SAT, pkSAT)
+    , !Psk($MC, $SAT, psk)
+    , Fr(~ss_sat)
+    , Fr(~ske)
+    , Fr(~sid) ]
+  --[ StartMC($MC, $SAT, ~sid) ]->
+    [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke)
+    , Out(<'M1', m1>) ]
+
+// SAT sends M2 and opens a contact/pass window (the linear !Contact token).
+rule SAT_1:
+    let ss_sat = adec(c_sat, ltkSAT)
+        c_e    = aenc(~ss_e, pke)
+        c_mc   = aenc(~ss_mc, pkMC)
+        th     = h(<c_sat, pke, c_e, c_mc>)
+        k      = kdf(<psk, ss_sat, ~ss_e, ~ss_mc, th>)
+        conf_s = senc(<'sc', th>, k)
+        m2     = senc(<'pl2', c_e, c_mc, conf_s>, psk)
+    in
+    [ !Ltk($SAT, ltkSAT)
+    , !Pk($MC, pkMC)
+    , !Psk($MC, $SAT, psk)
+    , In(<'M1', senc(<'pl1', c_sat, pke>, psk)>)
+    , Fr(~ss_e)
+    , Fr(~ss_mc)
+    , Fr(~sidS) ]
+  --[ Running($SAT, $MC, <'SATtoMC', k, th>)
+    , Honest($SAT), Honest($MC) ]->
+    [ St_SAT_1($SAT, $MC, ~sidS, k, th)
+    , Contact($SAT, ~sidS)
+    , Out(<'M2', m2>) ]
+
+// MC receives M2, checks SAT's confirmation, ACTIVATES the new key, sends M3.
+rule MC_2:
+    let th     = h(<c_sat, pke, c_e, c_mc>)
+        ss_e   = adec(c_e, ~ske)
+        ss_mc  = adec(c_mc, ltkMC)
+        k      = kdf(<psk, ~ss_sat, ss_e, ss_mc, th>)
+        conf_m = senc(<'mc', th>, k)
+    in
+    [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke)
+    , In(<'M2', senc(<'pl2', c_e, c_mc, conf_s>, psk)>) ]
+  --[ Eq(conf_s, senc(<'sc', th>, k))
+    , Commit($MC, $SAT, <'MCtoSAT', k, th>)
+    , KeyActiveMC($MC, $SAT, k)
+    , Secret(k)
+    , Honest($MC), Honest($SAT) ]->
+    [ Out(<'M3', conf_m>)
+    , !SessKey($MC, $SAT, k) ]
+
+// SAT processes M3 within the pass window and ACTIVATES the new key.
+rule SAT_2:
+    [ St_SAT_1($SAT, $MC, ~sidS, k, th)
+    , Contact($SAT, ~sidS)
+    , In(<'M3', conf_m>) ]
+  --[ Eq(conf_m, senc(<'mc', th>, k))
+    , KeyActiveSat($SAT, $MC, k)
+    , Secret(k)
+    , Honest($SAT), Honest($MC) ]->
+    [ !SessKey($SAT, $MC, k) ]
+
+// The pass ends before M3 is processed: the contact token is destroyed and
+// there is no retry for this session.
+rule Pass_ends:
+    [ Contact($SAT, ~sidS) ] --[ PassEnded($SAT, ~sidS) ]-> [ ]
+
+restriction Equality:
+    "All x y #i. Eq(x, y) @ #i ==> x = y"
+
+restriction OnlyOnce:
+    "All A #i #j. OnlyOnce(A) @ #i & OnlyOnce(A) @ #j ==> #i = #j"
+
+/* --------------------------------------------------------------------------
+   Sanity: an honest run can still complete both-sided within a pass.
+   -------------------------------------------------------------------------- */
+lemma executable:
+    exists-trace
+    "Ex MC SAT k #a #b.
+        KeyActiveMC(MC, SAT, k) @ #a
+      & KeyActiveSat(SAT, MC, k) @ #b"
+
+/* --------------------------------------------------------------------------
+   REKEY ATOMICITY (the space-specific finding).
+   Claim: whenever MC activates a new key, SAT also activates the same key.
+   Expected result: FALSIFIED. A closing pass window that drops M3 leaves MC on
+   the new key and SAT never activating it -> non-recoverable desynchronisation.
+   -------------------------------------------------------------------------- */
+lemma rekey_atomicity:
+    "All MC SAT k #i.
+        KeyActiveMC(MC, SAT, k) @ #i
+      ==>
+        ( Ex #j. KeyActiveSat(SAT, MC, k) @ #j )"
+
+/* --------------------------------------------------------------------------
+   Explicit desynchronisation witness: MC activates, the pass ends, SAT never
+   activates. Demonstrates the outage is reachable with NO key compromise.
+   -------------------------------------------------------------------------- */
+lemma desync_reachable:
+    exists-trace
+    "Ex MC SAT k sidS #i #e.
+        KeyActiveMC(MC, SAT, k) @ #i
+      & PassEnded(SAT, sidS) @ #e
+      & not (Ex #j. KeyActiveSat(SAT, MC, k) @ #j)
+      & not (Ex A #r. LtkReveal(A) @ #r)
+      & not (Ex M S #p. PskReveal(M, S) @ #p)"
+
+/* --------------------------------------------------------------------------
+   Replay resistance WITHOUT any timing assumption.
+   Two SAT activations can never share the same key (each run is fresh), no
+   matter how long messages are delayed. Confirms freshness rests on the
+   transcript hash and fresh ephemerals, not on timers -- essential for the
+   minutes-to-hours round trips of deep space.
+   -------------------------------------------------------------------------- */
+lemma replay_resistance_timing_independent:
+    "All SAT MC k #i #j.
+        KeyActiveSat(SAT, MC, k) @ #i & KeyActiveSat(SAT, MC, k) @ #j
+      ==> #i = #j"
+
+/* --------------------------------------------------------------------------
+   Key secrecy still holds under the space model (unchanged from triple_kem).
+   -------------------------------------------------------------------------- */
+lemma key_secrecy:
+    "All k #i.
+        Secret(k) @ #i
+      ==>
+        ( not (Ex #j. K(k) @ #j) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i )"
+
+end

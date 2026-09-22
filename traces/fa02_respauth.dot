@@ -1,0 +1,68 @@
+digraph "trace_dual_kem_SL2-AS0-CL0-A1-C1-NB_responder_auth_expected_fail-MC_2-MC_1-c_senc-Reveal_psk-c_senc-c_kdf-c_h-MC_1-split_case_4-c_aenc-c_aenc-Register_ltk" {
+nodesep="0.3";
+ranksep="0.3";
+node[fontsize="8",fontname="Helvetica",width="0.3",height="0.2"];
+edge[fontsize="8",fontname="Helvetica"];
+n5[shape="record",label="{{<n0> St_MC_1( $MC, $SAT, ~sid, ~ltk, ~psk, ~ske, pk(~ske) )|<n1> In( \<'M2', SE1\> )}|{<n2> #i : MC_2[Eq( SE2, SE2 ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commit( $MC, $SAT, \<'MCtoSAT', KD1, H1\> ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CommitKey( $MC, $SAT, KD1 ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AcceptMC( $MC, $SAT, KD1 ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Secret( KD1 ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Honest( $MC ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Honest( $SAT )]\l}|{<n3> Out( \<'M3', senc(\<'mc', H1\>, KD1)\> )|<n4> !SessKey( $MC, $SAT, KD1 )}}",fillcolor="#d5d897",style="filled",fontcolor="black",role="Undefined"];
+n6[label="#vf : isend",shape="ellipse"];
+n7[label="#vk : c_senc[!KU( SE1 )]",shape="ellipse"];
+n16[shape="record",label="{{<n8> !Ltk( $MC, ~ltk )|<n9> !Pk( $SAT, PK1 )|<n10> !Psk( $MC, $SAT, ~psk )|<n11> Fr( ~ske )|<n12> Fr( ~sid )}|{<n13> #vr : MC_1[StartMC( $MC, $SAT, ~sid )]}|{<n14> St_MC_1( $MC, $SAT, ~sid, ~ltk, ~psk, ~ske, pk(~ske) )|<n15> Out( \<'M1', SE3\> )}}",fillcolor="#c9d998",style="filled",fontcolor="black",role="Undefined"];
+n17[label="#vk.1 : coerce[!KU( ~psk )]",shape="ellipse"];
+n23[shape="record",label="{{<n18> Fr( ~ltk )}|{<n19> #vr.1 : Register_ltk[OnlyOnce( $MC )]}|{<n20> !Ltk( $MC, ~ltk )|<n21> !Pk( $MC, pk(~ltk) )|<n22> Out( pk(~ltk) )}}",fillcolor="#b1dc9a",style="filled",fontcolor="black",role="Undefined"];
+n24[label="#vk.2 : c_senc[!KU( SE2 )]",shape="ellipse"];
+n30[shape="record",label="{{<n25> Fr( ~ltk.1 )}|{<n26> #vr.2 : Register_ltk[OnlyOnce( $SAT )]}|{<n27> !Ltk( $SAT, ~ltk.1 )|<n28> !Pk( $SAT, PK1 )|<n29> Out( PK1 )}}",fillcolor="#b1dc9a",style="filled",fontcolor="black",role="Undefined"];
+n31[label="#vk.3 : c_kdf[!KU( KD1 )]",shape="ellipse"];
+n35[shape="record",label="{{<n32> Fr( ~psk )}|{<n33> #vr.3 : Register_psk[PskInit( $MC, $SAT )]}|{<n34> !Psk( $MC, $SAT, ~psk )}}",fillcolor="#abdc9a",style="filled",fontcolor="black",role="Undefined"];
+n36[label="#vk.4 : c_h[!KU( H1 )]",shape="ellipse"];
+n40[shape="record",label="{{<n37> !Psk( $MC, $SAT, ~psk )}|{<n38> #vr.4 : Reveal_psk[PskReveal( $MC, $SAT )]}|{<n39> Out( ~psk )}}",fillcolor="#a4dd9b",style="filled",fontcolor="black",role="Undefined"];
+n41[label="#vk.5 : coerce[!KU( pk(~ske) )]",shape="ellipse"];
+n42[label="#vk.6 : c_aenc[!KU( AE2 )]",shape="ellipse"];
+n43[label="#vr.6 : d_0_sdec",shape="ellipse"];
+n44[label="#vk.7 : c_aenc[!KU( AE1 )]",shape="ellipse"];
+n45[label="#vk.8 : coerce[!KU( pk(~ltk) )]",shape="ellipse"];
+n46[label="!KU( z ) @ #vk.22",shape="ellipse",color="gray"];
+n47[label="!KU( z.1 ) @ #vk.23",shape="ellipse",color="gray"];
+n6 -> n5:n1[color="gray30"];
+n16:n14 -> n5:n0[style="bold",weight="10.0"];
+n16:n15 -> n43[color="orangered2"];
+n23:n20 -> n16:n8[style="bold",weight="10.0",color="gray50"];
+n23:n22 -> n45[color="orangered2"];
+n30:n28 -> n16:n9[style="bold",weight="10.0",color="gray50"];
+n35:n34 -> n16:n10[style="bold",weight="10.0",color="gray50"];
+n35:n34 -> n40:n37[style="bold",weight="10.0",color="gray50"];
+n40:n39 -> n17[color="orangered2"];
+n43 -> n41[color="orangered2"];
+n7 -> n6[color="red",style="dashed"];
+n17 -> n7[color="red",style="dashed"];
+n17 -> n31[color="red",style="dashed"];
+n17 -> n43[color="red",style="dashed"];
+n24 -> n7[color="red",style="dashed"];
+n31 -> n24[color="red",style="dashed"];
+n36 -> n24[color="red",style="dashed"];
+n36 -> n31[color="red",style="dashed"];
+n41 -> n36[color="red",style="dashed"];
+n41 -> n42[color="red",style="dashed"];
+n42 -> n7[color="red",style="dashed"];
+n42 -> n36[color="red",style="dashed"];
+n44 -> n7[color="red",style="dashed"];
+n44 -> n36[color="red",style="dashed"];
+n45 -> n44[color="red",style="dashed"];
+n46 -> n31[color="red",style="dashed"];
+n46 -> n42[color="red",style="dashed"];
+n47 -> n31[color="red",style="dashed"];
+n47 -> n44[color="red",style="dashed"];
+{
+rank="sink";
+n48[shape="plain",label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="3" CELLPADDING="1"><TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">AE1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">aenc(z.1, pk(~ltk))</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">AE2</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">aenc(z, pk(~ske))</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">H1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">h(&lt;pk(~ske), AE2, AE1&gt;)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">KD1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">kdf(&lt;~psk, z, z.1, H1&gt;)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">PK1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">pk(~ltk.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE2</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">senc(&lt;'sc', H1&gt;, KD1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">senc(&lt;'pl2', AE2, AE1, SE2&gt;, ~psk)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE3</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">senc(&lt;'pl1', pk(~ske)&gt;, ~psk)</TD></TR></TABLE>>];
+
+}
+n5:n2 -> n48[style="invis"];
+
+}

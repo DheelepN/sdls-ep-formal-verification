@@ -1,0 +1,276 @@
+/*
+  ============================================================================
+  E2EQSS hybrid PQC handshake for CCSDS/SDLS
+  (Wildfeuer et al., ESA 3S 2025 -- VisionSpace / FHNW / Ateleris / IDQ)
+  ============================================================================
+
+  End-to-End Quantum-Safe Security for Satellite Data Links. The handshake
+  establishes an SDLS-EP master secret using a HYBRID of a post-quantum KEM
+  (ML-KEM-768) and a classical ephemeral key-exchange (ECDH), with mutual
+  authentication via ML-DSA-65-signed X.509 certificates from a CA (OCSP
+  abstracted as certificate validity).
+
+  The paper reports a Tamarin analysis by the authors, but only against replay
+  and man-in-the-middle, unpublished and "still ongoing." This model targets
+  the properties they do NOT report: mutual authentication as injective
+  agreement, key secrecy, and -- the design's headline -- the HYBRID guarantee
+  that the master secret survives the compromise of EITHER primitive alone.
+
+  ---------------------------------------------------------------------------
+  Modelling note on the hybrid legs.
+  Both key-establishment legs are modelled as idealized ephemeral key delivery:
+  an IND-CCA KEM is public-key encryption of a fresh shared secret, and the
+  ECDH leg is abstracted the same way (a fresh secret carried under an
+  ephemeral public value). This is deliberate and faithful for the property
+  under test: hybrid security depends only on each leg contributing an
+  INDEPENDENT secret that an attacker cannot obtain without the corresponding
+  ephemeral secret -- not on the algebraic (g^xy) structure of Diffie-Hellman.
+  Abstracting the ECDH leg this way removes the Diffie-Hellman AC-unification
+  that otherwise makes the hybrid lemmas non-terminating, without weakening the
+  claim: "break one leg, the other still protects the key" is exactly what the
+  two hybrid lemmas below check. A separate reveal rule per leg
+  (Reveal_kem_secret for the ML-KEM leg, Reveal_dh_secret for the ECDH leg)
+  lets the adversary break one leg at a time.
+  ---------------------------------------------------------------------------
+
+  Roles: MC (mission control, initiator), SAT (satellite, responder).
+
+    cert_A = Sign_skCA( <'cert', A, pkKem_A> )         -- ML-DSA cert from CA
+
+    M1  MC -> SAT :  cert_MC , eph_pk , dh_pk , c_ltSAT
+    M2  SAT-> MC  :  cert_SAT, c_eph , c_dh , c_ltMC , confirm_sat
+    M3  MC -> SAT :  confirm_mc
+
+    c_ltSAT = Encap(pkKem_SAT)   -- challenges SAT long-term key (authenticates SAT)
+    c_ltMC  = Encap(pkKem_MC)    -- challenges MC  long-term key (authenticates MC)
+    c_eph   = Encap(eph_pk)      -- ML-KEM ephemeral leg  (post-quantum)
+    c_dh    = Encap(dh_pk)       -- ECDH ephemeral leg    (classical, abstracted)
+    th      = H(cert_MC,cert_SAT, eph_pk,dh_pk, c_ltSAT,c_eph,c_dh,c_ltMC)
+    MS      = KDF( ss_ltSAT, ss_eph, ss_dh, ss_ltMC, th )    -- hybrid master secret
+  ============================================================================
+*/
+
+theory e2eqss
+begin
+
+builtins: asymmetric-encryption, signing, symmetric-encryption, hashing
+
+functions: kdf/1
+
+/* --------------------------------------------------------------------------
+   PKI: a CA that issues ML-DSA-signed certificates.
+   -------------------------------------------------------------------------- */
+
+rule Register_CA:
+    [ Fr(~skCA) ]
+  --[ OnlyOnce('CA') ]->
+    [ !CA(~skCA), !Pk('CA', pk(~skCA)), Out(pk(~skCA)) ]
+
+rule Register_ltk:
+    [ !CA(skCA), Fr(~kem) ]
+  --[ OnlyOnce($A) ]->
+    [ !Ltk($A, ~kem)
+    , !Pk($A, pk(~kem))
+    , !Cert($A, sign(<'cert', $A, pk(~kem)>, skCA))
+    , Out(pk(~kem)) ]
+
+/* --------------------------------------------------------------------------
+   Adversary capabilities.
+   -------------------------------------------------------------------------- */
+
+rule Reveal_ltk:
+    [ !Ltk($A, kem) ] --[ LtkReveal($A) ]-> [ Out(kem) ]
+
+// Break the ML-KEM (post-quantum) leg: leak an ephemeral KEM shared secret.
+rule Reveal_kem_secret:
+    [ !KemSecret(s) ] --[ KemReveal(s) ]-> [ Out(s) ]
+
+// Break the ECDH (classical) leg: leak the ephemeral ECDH shared secret.
+rule Reveal_dh_secret:
+    [ !DhSecret(s) ] --[ DhReveal(s) ]-> [ Out(s) ]
+
+/* --------------------------------------------------------------------------
+   Handshake.
+   -------------------------------------------------------------------------- */
+
+rule MC_1:
+    let eph_pk  = pk(~eph_sk)
+        dh_pk   = pk(~dh_sk)
+        c_ltSAT = aenc(~ss_ltSAT, pkSAT)
+        m1      = <'M1', certMC, eph_pk, dh_pk, c_ltSAT>
+    in
+    [ !Ltk($MC, kemMC)
+    , !Cert($MC, certMC)
+    , !Pk($SAT, pkSAT)
+    , Fr(~eph_sk)
+    , Fr(~dh_sk)
+    , Fr(~ss_ltSAT)
+    , Fr(~sid) ]
+  --[ StartMC($MC, $SAT, ~sid) ]->
+    [ St_MC_1($MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk, dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT)
+    , Out(m1) ]
+
+rule SAT_1:
+    let ss_ltSAT = adec(c_ltSAT, kemSAT)
+        c_eph    = aenc(~ss_eph, eph_pk)
+        c_dh     = aenc(~ss_dh, dh_pk)
+        c_ltMC   = aenc(~ss_ltMC, pkMC)
+        th       = h(<certMC, certSAT, eph_pk, dh_pk, c_ltSAT, c_eph, c_dh, c_ltMC>)
+        MS       = kdf(<ss_ltSAT, ~ss_eph, ~ss_dh, ~ss_ltMC, th>)
+        conf_s   = senc(<'sc', th>, MS)
+        m2       = <'M2', certSAT, c_eph, c_dh, c_ltMC, conf_s>
+    in
+    [ !Ltk($SAT, kemSAT)
+    , !Cert($SAT, certSAT)
+    , !Pk($MC, pkMC)
+    , !Pk('CA', pkCA)
+    , In(<'M1', certMC, eph_pk, dh_pk, c_ltSAT>)
+    , Fr(~ss_eph)
+    , Fr(~ss_dh)
+    , Fr(~ss_ltMC)
+    , Fr(~sidS) ]
+  --[ Eq(verify(certMC, <'cert', $MC, pkMC>, pkCA), true)
+    , Running($SAT, $MC, <'SATtoMC', th>)
+    , RunningKey($SAT, $MC, MS)
+    , DhClaim(~ss_dh)
+    , KemClaim(~ss_eph)
+    , Honest($SAT), Honest($MC) ]->
+    [ St_SAT_1($SAT, $MC, ~sidS, MS, th)
+    , !KemSecret(~ss_eph)
+    , !KemSecret(~ss_ltMC)
+    , !DhSecret(~ss_dh)
+    , Out(m2) ]
+
+rule MC_2:
+    let ss_eph = adec(c_eph, ~eph_sk)
+        ss_dh  = adec(c_dh, ~dh_sk)
+        ss_ltMC= adec(c_ltMC, kemMC)
+        th     = h(<certMC, certSAT, eph_pk, dh_pk, c_ltSAT, c_eph, c_dh, c_ltMC>)
+        MS     = kdf(<~ss_ltSAT, ss_eph, ss_dh, ss_ltMC, th>)
+        conf_m = senc(<'mc', th>, MS)
+    in
+    [ St_MC_1($MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk, dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT)
+    , !Pk('CA', pkCA)
+    , In(<'M2', certSAT, c_eph, c_dh, c_ltMC, conf_s>) ]
+  --[ Eq(verify(certSAT, <'cert', $SAT, pkSAT>, pkCA), true)
+    , Eq(conf_s, senc(<'sc', th>, MS))
+    , Commit($MC, $SAT, <'MCtoSAT', th>)
+    , AcceptMC($MC, $SAT, MS)
+    , Secret(MS)
+    , Honest($MC), Honest($SAT) ]->
+    [ Out(<'M3', conf_m>)
+    , !SessKey($MC, $SAT, MS) ]
+
+rule SAT_2:
+    [ St_SAT_1($SAT, $MC, ~sidS, MS, th)
+    , In(<'M3', conf_m>) ]
+  --[ Eq(conf_m, senc(<'mc', th>, MS))
+    , Commit($SAT, $MC, <'SATtoMC', th>)
+    , AcceptSat($SAT, $MC, MS)
+    , Secret(MS)
+    , Honest($SAT), Honest($MC) ]->
+    [ !SessKey($SAT, $MC, MS) ]
+
+/* --------------------------------------------------------------------------
+   Restrictions
+   -------------------------------------------------------------------------- */
+
+restriction Equality:
+    "All x y #i. Eq(x, y) @ #i ==> x = y"
+
+restriction OnlyOnce:
+    "All A #i #j. OnlyOnce(A) @ #i & OnlyOnce(A) @ #j ==> #i = #j"
+
+/* --------------------------------------------------------------------------
+   Lemmas
+   -------------------------------------------------------------------------- */
+
+lemma executable:
+    exists-trace
+    "Ex MC SAT MS #a #b.
+        AcceptMC(MC, SAT, MS) @ #a
+      & AcceptSat(SAT, MC, MS) @ #b"
+
+// Baseline key secrecy against a network adversary (no primitive broken).
+lemma key_secrecy:
+    "All MS #i.
+        Secret(MS) @ #i
+      & not (Ex s #k. KemReveal(s) @ #k)
+      & not (Ex s #d. DhReveal(s) @ #d)
+      ==>
+        ( not (Ex #j. K(MS) @ #j) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i )"
+
+// Mutual authentication (certificate-based ML-DSA + long-term KEM challenge),
+// stated as (non-injective) agreement on the transcript hash: whenever MC
+// commits on th, SAT genuinely ran on the same th. Replay/uniqueness is the
+// separate lemma below. Together these give the MITM- and replay-resistance
+// the E2EQSS authors report, plus the properties they do not.
+lemma mutual_authentication_MC [heuristic=O]:
+    "All MC SAT th #i.
+        Commit(MC, SAT, <'MCtoSAT', th>) @ #i
+      ==>
+        ( Ex #j. Running(SAT, MC, <'SATtoMC', th>) @ #j & #j < #i )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+// Replay resistance: a given transcript is committed by MC at most once (the
+// transcript hash binds fresh ephemeral material, so sessions do not collide).
+lemma replay_resistance:
+    "All MC SAT th #i #j.
+        Commit(MC, SAT, <'MCtoSAT', th>) @ #i
+      & Commit(MC, SAT, <'MCtoSAT', th>) @ #j
+      ==> #i = #j"
+
+// Hybrid security, leg 1: the ECDH leg is fully broken (all ss_dh leaked), yet
+// the key holds because the ML-KEM leg survives.
+lemma hybrid_secure_if_kem_survives:
+    "All MS #i.
+        Secret(MS) @ #i
+      & not (Ex s #k. KemReveal(s) @ #k)
+      & not (Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i)
+      ==>
+        not (Ex #j. K(MS) @ #j)"
+
+/*
+  OPEN QUESTION (hybrid security, leg 2): does the ECDH leg protect the key
+  when the ML-KEM leg is broken?
+
+  This direction is left as a documented conjecture rather than a claimed
+  result: the corresponding lemma (and its constructive exists-trace attack
+  form) did not terminate in Tamarin within the available time/memory budget,
+  under the default heuristic, alternative built-in heuristics, and a custom
+  proof oracle. This is a known limitation of symbolic analysis over rich KEM
+  equational theories, not a positive or negative security claim.
+
+  Manual analysis strongly suggests the property does NOT hold, i.e. the ECDH
+  leg does not rescue confidentiality once ML-KEM is broken:
+
+    * The ML-DSA certificates sign only the STATIC long-term KEM key of each
+      party. Nobody signs the per-session ephemeral public keys (eph_pk, dh_pk)
+      or the handshake transcript.
+    * Per-session peer authentication therefore rests on the KEM challenge
+      (c_ltMC / c_ltSAT: only the holder of the long-term KEM secret key can
+      recover the encapsulated secret that feeds the MAC).
+    * If ML-KEM is broken, that challenge is defeated. An adversary can replay
+      an honest party's public certificate while substituting its own ephemeral
+      keys, complete the handshake, and -- with the KEM-leg secrets exposed --
+      recover every KDF input. The surviving ECDH leg does not restore
+      confidentiality because its ephemeral key was never authenticated.
+
+  If confirmed, the mitigation is to authenticate the transcript (or at least
+  the ephemeral public keys) with the ML-DSA signatures, so that authentication
+  survives the loss of either primitive -- making the construction hybrid for
+  AUTHENTICATION as well as for confidentiality. Confirming this is left to an
+  interactive Tamarin proof or a hand proof (Phase 4 follow-up).
+
+lemma hybrid_dh_attack_exists:
+    exists-trace
+    "Ex MS #i #j.
+        Secret(MS) @ #i
+      & K(MS) @ #j
+      & (Ex s #k. KemReveal(s) @ #k)
+      & not (Ex s #d. DhReveal(s) @ #d)
+      & not (Ex A #r. LtkReveal(A) @ #r)"
+*/
+
+end

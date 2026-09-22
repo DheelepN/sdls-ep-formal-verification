@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+
+# Source papers and standards. Freely downloadable from their publishers, but
+# other people's copyrighted material and not ours to redistribute. Every claim
+# derived from them cites the document and clause.
+references/*.pdf
+references/*.txt
+
+# Fresh prover output from reproduce.sh; the captured originals in traces/ are
+# the ones that back the reported results.
+traces/rerun/
