@@ -1,29 +1,32 @@
 cff-version: 1.2.0
+message: "If you use this artifact, please cite it as below."
 title: "Mechanized Analysis of Post-Quantum Key-Update Proposals for CCSDS SDLS-EP"
-message: >-
-  If you use these models or results, please cite this work. The Tamarin theory
-  files are as much the contribution as the report: they are what lets a revised
-  protocol be re-verified rather than re-argued.
+abstract: >-
+  Symbolic (Dolev-Yao) verification, in the Tamarin prover, of two proposed
+  post-quantum extensions to the CCSDS Space Data Link Security Extended
+  Procedures: the Triple-KEM/Dual-KEM key-update mechanism (Hulsing, Lange &
+  Weber, CANS 2025) and E2EQSS (Wildfeuer et al., ESA 3S 2025). Confirms
+  Triple-KEM's claimed properties, makes Dual-KEM's security boundary precise,
+  and reports a new finding (FB-01): a non-recoverable rekey desynchronization
+  under space channel constraints that requires no cryptographic compromise.
+  Also shows E2EQSS is hybrid for confidentiality but not for authentication.
 type: software
 authors:
-  - family-names: "Gupthaa"
-    given-names: "N. Dheelep Sai"
-abstract: >-
-  Symbolic verification in the Tamarin prover of two proposed post-quantum
-  extensions to CCSDS SDLS Extended Procedures. Confirms the Triple-KEM
-  proposal's claimed properties, makes the Dual-KEM variant's security boundary
-  precise, and reports FB-01: a non-recoverable rekey desynchronization under
-  space channel constraints, in which a single lost key confirmation across a
-  closing contact window leaves ground and spacecraft on different keys with no
-  automatic recovery, requiring no cryptographic compromise. Also shows that
-  E2EQSS is hybrid for confidentiality but not for authentication.
+  - given-names: "N. Dheelep Sai"
+    family-names: "Gupthaa"
+    affiliation: "Independent Researcher"
+    email: dheelep.phd@gmail.com
 keywords:
+  - BPSec
+  - SDLS-EP
   - CCSDS
-  - SDLS
   - Tamarin prover
-  - symbolic verification
+  - formal verification
   - post-quantum cryptography
-  - key update
+  - key management
   - post-compromise security
-  - space systems security
 license: MIT
+doi: 10.5281/zenodo.22907127
+version: "1.0"
+date-released: "2026-09-23"
+repository-code: "https://github.com/DheelepN/sdls-ep-formal-verification"
