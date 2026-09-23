@@ -93,10 +93,32 @@ it takes 327 steps.
 
 ## Status
 
-Phases 0–4 complete. The verification report is drafted. Remaining steps are
-outward-facing and deliberately left for a human: courtesy notice to the
-proposal authors, then the CCSDS Security Working Group; a Zenodo DOI for the
-models and captured proofs; and a venue decision.
+Phases 0–4 complete. The verification report is drafted. Courtesy notice sent
+to the Triple-KEM/Dual-KEM authors (Hülsing, Lange) and to the E2EQSS author
+(Wildfeuer) — both replied; Lange independently confirmed FB-01 against an
+operational fix ESA had already made. CCSDS Security Working Group notice in
+progress. Remaining: a venue decision.
+
+## Cite this work
+
+If you use these models or results, please cite the archived release (the
+Tamarin theory files are as much the contribution as the report — they are
+what lets a revised protocol be re-verified rather than re-argued):
+
+```bibtex
+@software{gupthaa_sdls_ep_2026,
+  author       = {Gupthaa, N. Dheelep Sai},
+  title        = {{Mechanized Analysis of Post-Quantum Key-Update
+                   Proposals for CCSDS SDLS-EP}},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.22907127},
+  url          = {https://doi.org/10.5281/zenodo.22907127}
+}
+```
+
+DOI `10.5281/zenodo.22907127` always resolves to the latest release; see
+[`CITATION.cff`](CITATION.cff) for a machine-readable version.
 
 ## Licence
 
