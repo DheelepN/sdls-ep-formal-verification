@@ -126,6 +126,7 @@ rule MC_2:
     [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke)
     , In(<'M2', senc(<'pl2', c_e, c_mc, conf_s>, psk)>) ]
   --[ Eq(conf_s, senc(<'sc', th>, k))
+    , Running(  $MC, $SAT, <'MCtoSAT', k, th> )
     , Commit(   $MC, $SAT, <'MCtoSAT', k, th> )
     , CommitKey($MC, $SAT, k)
     , AcceptMC( $MC, $SAT, k)
@@ -194,10 +195,16 @@ lemma forward_secrecy:
         ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
 
 /* --------------------------------------------------------------------------
-   Post-compromise security (the headline claim).
-   Even if the psk (a prior shared secret / prior session state) is revealed,
-   the newly established key is secret, provided the long-term keys and the
-   ephemeral of THIS run were not compromised.
+   Post-compromise security (the headline claim), in the sense of psk
+   compromise: even if the psk (a prior shared secret / prior session state)
+   is revealed, the newly established key is secret, provided the long-term
+   keys and the ephemeral of THIS run were not compromised.
+
+   Note: key_secrecy above already lets the adversary reveal any psk, so this
+   lemma is a special case of it (same conclusion, stronger hypothesis). It is
+   stated separately only to make the psk-compromise scenario explicit; it is
+   not an independent result. Healing after LONG-TERM key compromise is not
+   modelled here.
    -------------------------------------------------------------------------- */
 
 lemma post_compromise_security:
@@ -220,6 +227,24 @@ lemma mutual_authentication_MC:
         ( Ex #j. Running(SAT, MC, <'SATtoMC', k, th>) @ #j & #j < #i
           & not (Ex MC2 SAT2 #i2.
                  Commit(MC2, SAT2, <'MCtoSAT', k, th>) @ #i2 & not(#i2 = #i)) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+/* --------------------------------------------------------------------------
+   Injective agreement, the other direction.
+   When SAT commits to (k, th) with MC, MC indeed ran with SAT on the same
+   (k, th), uniquely, unless a long-term key was revealed beforehand. MC is
+   authenticated to SAT by c_mc: only the holder of MC's long-term key
+   recovers ss_mc, which feeds k and hence MC's confirmation in M3.
+   Together with mutual_authentication_MC this is mutual authentication.
+   -------------------------------------------------------------------------- */
+
+lemma mutual_authentication_SAT:
+    "All SAT MC k th #i.
+        Commit(SAT, MC, <'SATtoMC', k, th>) @ #i
+      ==>
+        ( Ex #j. Running(MC, SAT, <'MCtoSAT', k, th>) @ #j & #j < #i
+          & not (Ex SAT2 MC2 #i2.
+                 Commit(SAT2, MC2, <'SATtoMC', k, th>) @ #i2 & not(#i2 = #i)) )
       | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
 
 /* --------------------------------------------------------------------------

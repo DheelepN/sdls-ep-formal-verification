@@ -206,7 +206,7 @@ lemma key_secrecy:
 // commits on th, SAT genuinely ran on the same th. Replay/uniqueness is the
 // separate lemma below. Together these give the MITM- and replay-resistance
 // the E2EQSS authors report, plus the properties they do not.
-lemma mutual_authentication_MC [heuristic=O]:
+lemma mutual_authentication_MC [heuristic=O "oracle_e2eqss.py"]:
     "All MC SAT th #i.
         Commit(MC, SAT, <'MCtoSAT', th>) @ #i
       ==>

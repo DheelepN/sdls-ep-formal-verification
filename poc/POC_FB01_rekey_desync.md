@@ -23,7 +23,7 @@ This is a formal-methods proof of concept. The "exploit" is a Tamarin attack tra
 ## Build & Run
 
 ```bash
-# from Project_B/models  (WSL: Tamarin 1.12.0, Maude 3.1)
+# from models/  (Tamarin 1.12.0, Maude 3.1)
 tamarin-prover --prove triple_kem_space.spthy
 
 # export the desynchronization trace as a graph:
@@ -46,6 +46,8 @@ The exported trace (`fb01_desync.dot`) is the following rule-firing sequence. It
 6. **`SAT_2` never fires.** With the contact token gone and no retry, SAT can never process `M3`. `KeyActiveSat(...)` never occurs.
 
 End state: `KeyActiveMC(MC, SAT, k)` is in the trace; `KeyActiveSat(SAT, MC, k)` is not. MC is on the new key; SAT is still on the old key.
+
+Note that the essential event is step 6 — M3 is never processed. The shorter counterexample Tamarin gives for `rekey_atomicity` (5 steps) is just that, without `Pass_ends`; the same trace exists in the plain `triple_kem.spthy`. The pass window is what makes the loss final for the session. "No recovery" reflects the proposal, which defines no recovery step; Tamarin does not derive it.
 
 ## Confirmed output
 
@@ -78,4 +80,20 @@ After the desync, MC encrypts subsequent SDLS traffic under the new master key; 
 
 ## Recommended mitigation
 
-MC must not activate/switch the SDLS master key until it has positive evidence that SAT activated it — e.g. a SAT→MC post-activation acknowledgement (a 4th message), or deferred activation with a defined fallback to the previous key if acknowledgement does not arrive within the pass. This makes the rekey atomic and retry-safe across pass boundaries.
+MC must not activate/switch the SDLS master key until it has positive evidence that SAT activated it — a SAT→MC post-activation acknowledgement (a 4th message).
+
+That alone is not enough. No number of messages makes the switch atomic over a lossy link (the two generals problem): if the acknowledgement is lost, SAT is on the new key and MC on the old one. The rekey is safe only if SAT also keeps the old key after activating the new one, and retires it only on evidence that MC switched — for example the first authenticated frame under the new key.
+
+[`models/triple_kem_space_4pass.spthy`](../models/triple_kem_space_4pass.spthy) verifies this design ([`traces/triple_kem_space_4pass_proof.txt`](../traces/triple_kem_space_4pass_proof.txt)):
+
+```
+executable (exists-trace): verified (11 steps)
+mc_activation_safe (all-traces): verified (9 steps)
+sat_retirement_safe (all-traces): verified (18 steps)
+sat_activation_implies_mc_activation (all-traces): falsified - found trace (8 steps)
+residual_asymmetry_reachable (exists-trace): verified (8 steps)
+replay_resistance_timing_independent (all-traces): verified (10 steps)
+key_secrecy (all-traces): verified (23 steps)
+```
+
+MC activates only after SAT did, and SAT drops the old key only after MC activated, so SAT always holds the key MC is using. The one falsified lemma is the expected residue: a lost M4 leaves SAT ahead of MC ([`traces/fb01_fix_residual.dot`](../traces/fb01_fix_residual.dot)), which is harmless because SAT still holds the old key.

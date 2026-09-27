@@ -99,6 +99,7 @@ rule MC_2:
     [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ske, pke)
     , In(<'M2', senc(<'pl2', c_e, c_mc, conf_s>, psk)>) ]
   --[ Eq(conf_s, senc(<'sc', th>, k))
+    , Running(  $MC, $SAT, <'MCtoSAT', k, th> )
     , Commit(   $MC, $SAT, <'MCtoSAT', k, th> )
     , CommitKey($MC, $SAT, k)
     , AcceptMC( $MC, $SAT, k)
@@ -130,14 +131,19 @@ lemma executable:
       & AcceptSat(SAT, MC, k) @ #b"
 
 // Initiator authentication is retained: MC is authenticated to SAT through
-// c_mc, so this should still hold.
+// c_mc, so this should still hold -- and it should hold even once the psk is
+// revealed, because only MC's long-term key recovers ss_mc, which feeds k and
+// hence MC's confirmation in M3.
+//
+// (Earlier versions of this lemma required Running(SAT, MC, ...), i.e. SAT's
+// OWN earlier step, which SAT_2 always has from its state; the lemma was
+// therefore vacuous. It now requires MC's Running event.)
 lemma initiator_auth_holds:
     "All SAT MC k th #i.
         Commit(SAT, MC, <'SATtoMC', k, th>) @ #i
       ==>
-        ( Ex #j. Running(SAT, MC, <'SATtoMC', k, th>) @ #j )
-      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )
-      | ( Ex M S #p. PskReveal(M, S) @ #p )"
+        ( Ex #j. Running(MC, SAT, <'MCtoSAT', k, th>) @ #j & #j < #i )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
 
 // Responder authentication is expected to FAIL: MC cannot authenticate SAT.
 // Tamarin should falsify this and return an attack trace.

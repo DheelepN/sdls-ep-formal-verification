@@ -8,7 +8,7 @@ Why not CVE-style runnable exploits? The targets are **published protocol propos
 
 | PoC | Finding | Verdict | Reproducible artifact |
 |---|---|---|---|
-| [POC_FB01_rekey_desync.md](POC_FB01_rekey_desync.md) | **FB-01** — non-recoverable rekey desynchronization in Triple-KEM under a closing pass window (no crypto compromise) | ✅ confirmed | `traces/fb01_desync.dot` / `.json` |
+| [POC_FB01_rekey_desync.md](POC_FB01_rekey_desync.md) | **FB-01** — rekey desynchronization in Triple-KEM under a closing pass window, with no defined recovery (no crypto compromise); plus the verified four-message fix | ✅ confirmed | `traces/fb01_desync.dot` / `.json`; fix residue `traces/fb01_fix_residual.dot` / `.json` |
 | [POC_FA02_dual_kem.md](POC_FA02_dual_kem.md) | **FA-02** — Dual-KEM loses responder authentication and post-compromise security once the psk leaks | ✅ confirmed (2 traces) | `traces/fa02_respauth.dot`, `traces/fa02_pcs.dot` |
 | [POC_FC01_e2eqss_hybrid.md](POC_FC01_e2eqss_hybrid.md) | **FC-01** — E2EQSS hybrid does not protect confidentiality when ML-KEM breaks (auth rides only on the KEM challenge) | ✅ confirmed | `traces/fc01_attack.dot` (isolated model) |
 

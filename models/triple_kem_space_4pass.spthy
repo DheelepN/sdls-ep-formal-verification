@@ -1,0 +1,246 @@
+/*
+  ============================================================================
+  Triple-KEM under the space channel model -- FOUR-message variant (FB-01 fix)
+  ============================================================================
+
+  models/triple_kem_space.spthy shows FB-01: MC activates the new key on
+  sending M3, SAT only on receiving it, so one lost M3 leaves MC on the new key
+  and SAT on the old one.
+
+  The natural fix is a fourth message: SAT acknowledges activation, and MC does
+  not activate until it has that acknowledgement. This model checks what that
+  fix does and does not give.
+
+  What it cannot give is atomicity. Over a channel that can lose any message,
+  no finite number of messages makes both sides switch together (the
+  coordinated-attack / "two generals" problem). A fourth message only moves the
+  window: if M4 is lost, SAT is on the new key and MC on the old one. The fix is
+  therefore safe only if SAT KEEPS THE OLD KEY after activating the new one, and
+  retires it only once it has evidence that MC switched -- here, the first
+  authenticated frame from MC under the new key.
+
+  Messages:
+    M1  MC -> SAT :  AEAD_psk( c_sat , pk_e )
+    M2  SAT-> MC  :  AEAD_psk( c_e , c_mc , confirm_sat )       (pass opens)
+    M3  MC -> SAT :  confirm_mc                  MC does NOT activate yet
+    M4  SAT-> MC  :  ack = MAC_k('ack', th)      SAT activates k, keeps old key
+    --  MC activates k on a valid M4, then sends traffic under k
+    F   MC -> SAT :  first frame under k         SAT retires the old key
+
+  The psk plays the role of the current (old) SDLS key. Both M3 and M4 can be
+  lost: M3 by the pass closing (Pass_ends) or the network, M4 by the network.
+
+  Safety argument (the two lemmas that carry it):
+    mc_activation_safe   MC activates k only after SAT activated k.
+    sat_retirement_safe  SAT retires the old key only after MC activated k.
+  MC only ever sends under the old key or, after activation, under k. By the
+  first lemma SAT already holds k by then; by the second SAT still holds the
+  old key for as long as MC may be using it. So SAT always holds the key MC is
+  using: no dead state, whatever message is lost. What remains is the harmless
+  asymmetric state (SAT holds both, MC on old), shown reachable below.
+
+  Out of scope: a second rekey started while SAT still holds both keys; how SAT
+  discards a pending new key that MC never activated. A specification needs a
+  rule for both.
+  ============================================================================
+*/
+
+theory triple_kem_space_4pass
+begin
+
+builtins: asymmetric-encryption, symmetric-encryption, hashing
+
+functions: kdf/1
+
+rule Register_ltk:
+    [ Fr(~ltk) ]
+  --[ OnlyOnce($A) ]->
+    [ !Ltk($A, ~ltk), !Pk($A, pk(~ltk)), Out(pk(~ltk)) ]
+
+rule Register_psk:
+    [ Fr(~psk) ]
+  --[ PskInit($MC, $SAT) ]->
+    [ !Psk($MC, $SAT, ~psk) ]
+
+rule Reveal_ltk:
+    [ !Ltk($A, ltk) ] --[ LtkReveal($A) ]-> [ Out(ltk) ]
+
+rule Reveal_psk:
+    [ !Psk($MC, $SAT, psk) ] --[ PskReveal($MC, $SAT) ]-> [ Out(psk) ]
+
+rule MC_1:
+    let pke   = pk(~ske)
+        c_sat = aenc(~ss_sat, pkSAT)
+        m1    = senc(<'pl1', c_sat, pke>, psk)
+    in
+    [ !Ltk($MC, ltkMC)
+    , !Pk($SAT, pkSAT)
+    , !Psk($MC, $SAT, psk)
+    , Fr(~ss_sat)
+    , Fr(~ske)
+    , Fr(~sid) ]
+  --[ StartMC($MC, $SAT, ~sid) ]->
+    [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke)
+    , Out(<'M1', m1>) ]
+
+// SAT sends M2 and opens a contact/pass window (the linear Contact token).
+rule SAT_1:
+    let ss_sat = adec(c_sat, ltkSAT)
+        c_e    = aenc(~ss_e, pke)
+        c_mc   = aenc(~ss_mc, pkMC)
+        th     = h(<c_sat, pke, c_e, c_mc>)
+        k      = kdf(<psk, ss_sat, ~ss_e, ~ss_mc, th>)
+        conf_s = senc(<'sc', th>, k)
+        m2     = senc(<'pl2', c_e, c_mc, conf_s>, psk)
+    in
+    [ !Ltk($SAT, ltkSAT)
+    , !Pk($MC, pkMC)
+    , !Psk($MC, $SAT, psk)
+    , In(<'M1', senc(<'pl1', c_sat, pke>, psk)>)
+    , Fr(~ss_e)
+    , Fr(~ss_mc)
+    , Fr(~sidS) ]
+  --[ Running($SAT, $MC, <'SATtoMC', k, th>)
+    , Honest($SAT), Honest($MC) ]->
+    [ St_SAT_1($SAT, $MC, ~sidS, k, th)
+    , Contact($SAT, ~sidS)
+    , Out(<'M2', m2>) ]
+
+// MC checks SAT's confirmation and sends M3, but does NOT activate k yet.
+rule MC_2:
+    let th     = h(<c_sat, pke, c_e, c_mc>)
+        ss_e   = adec(c_e, ~ske)
+        ss_mc  = adec(c_mc, ltkMC)
+        k      = kdf(<psk, ~ss_sat, ss_e, ss_mc, th>)
+        conf_m = senc(<'mc', th>, k)
+    in
+    [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke)
+    , In(<'M2', senc(<'pl2', c_e, c_mc, conf_s>, psk)>) ]
+  --[ Eq(conf_s, senc(<'sc', th>, k))
+    , Commit($MC, $SAT, <'MCtoSAT', k, th>)
+    , Secret(k)
+    , Honest($MC), Honest($SAT) ]->
+    [ St_MC_2($MC, $SAT, ~sid, k, th)
+    , Out(<'M3', conf_m>) ]
+
+// SAT processes M3 within the pass window, ACTIVATES k, keeps the old key,
+// and acknowledges with M4.
+rule SAT_2:
+    [ St_SAT_1($SAT, $MC, ~sidS, k, th)
+    , Contact($SAT, ~sidS)
+    , In(<'M3', conf_m>) ]
+  --[ Eq(conf_m, senc(<'mc', th>, k))
+    , KeyActiveSat($SAT, $MC, k)
+    , Secret(k)
+    , Honest($SAT), Honest($MC) ]->
+    [ St_SAT_2($SAT, $MC, ~sidS, k, th)
+    , Out(<'M4', senc(<'ack', th>, k)>) ]
+
+// MC receives a valid M4 and only now ACTIVATES k.
+rule MC_3:
+    [ St_MC_2($MC, $SAT, ~sid, k, th)
+    , In(<'M4', ack>) ]
+  --[ Eq(ack, senc(<'ack', th>, k))
+    , KeyActiveMC($MC, $SAT, k)
+    , Honest($MC), Honest($SAT) ]->
+    [ !MC_Active($MC, $SAT, k, th) ]
+
+// After activation MC sends ordinary traffic under k.
+rule MC_send:
+    [ !MC_Active($MC, $SAT, k, th) ]
+  --[ SendNewKey($MC, $SAT, k) ]->
+    [ Out(<'F', senc(<'frame', th>, k)>) ]
+
+// SAT retires the old key on the first authenticated frame under k.
+rule SAT_retire:
+    [ St_SAT_2($SAT, $MC, ~sidS, k, th)
+    , In(<'F', senc(<'frame', th>, k)>) ]
+  --[ RetireOldSat($SAT, $MC, k)
+    , Honest($SAT), Honest($MC) ]->
+    [ ]
+
+// The pass ends before M3 is processed: no retry for this session.
+rule Pass_ends:
+    [ Contact($SAT, ~sidS) ] --[ PassEnded($SAT, ~sidS) ]-> [ ]
+
+restriction Equality:
+    "All x y #i. Eq(x, y) @ #i ==> x = y"
+
+restriction OnlyOnce:
+    "All A #i #j. OnlyOnce(A) @ #i & OnlyOnce(A) @ #j ==> #i = #j"
+
+/* --------------------------------------------------------------------------
+   Sanity: the full four-message rekey completes, including retirement of the
+   old key, with no compromise.
+   -------------------------------------------------------------------------- */
+lemma executable:
+    exists-trace
+    "Ex MC SAT k #a #b #c.
+        KeyActiveSat(SAT, MC, k) @ #a
+      & KeyActiveMC(MC, SAT, k) @ #b
+      & RetireOldSat(SAT, MC, k) @ #c
+      & not (Ex A #r. LtkReveal(A) @ #r)
+      & not (Ex M S #p. PskReveal(M, S) @ #p)"
+
+/* --------------------------------------------------------------------------
+   FB-01 closed: MC activates k only after SAT activated k. This is the
+   property rekey_atomicity in triple_kem_space.spthy fails.
+   -------------------------------------------------------------------------- */
+lemma mc_activation_safe:
+    "All MC SAT k #i.
+        KeyActiveMC(MC, SAT, k) @ #i
+      ==>
+        ( Ex #j. KeyActiveSat(SAT, MC, k) @ #j & #j < #i )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+/* --------------------------------------------------------------------------
+   SAT retires the old key only after MC activated k.
+   -------------------------------------------------------------------------- */
+lemma sat_retirement_safe:
+    "All SAT MC k #i.
+        RetireOldSat(SAT, MC, k) @ #i
+      ==>
+        ( Ex #j. KeyActiveMC(MC, SAT, k) @ #j & #j < #i )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+/* --------------------------------------------------------------------------
+   Two generals, the residue. The converse -- whenever SAT activates, MC
+   activates too -- is expected to be FALSIFIED: a lost M4 leaves SAT on the
+   new key and MC on the old one. This is why SAT must keep the old key.
+   -------------------------------------------------------------------------- */
+lemma sat_activation_implies_mc_activation:
+    "All SAT MC k #i.
+        KeyActiveSat(SAT, MC, k) @ #i
+      ==>
+        ( Ex #j. KeyActiveMC(MC, SAT, k) @ #j )"
+
+/* --------------------------------------------------------------------------
+   The residual state is reachable with no compromise of any kind: SAT active
+   on k, MC never activates, and SAT has not retired the old key -- so MC,
+   still on the old key, is still understood.
+   -------------------------------------------------------------------------- */
+lemma residual_asymmetry_reachable:
+    exists-trace
+    "Ex SAT MC k #i.
+        KeyActiveSat(SAT, MC, k) @ #i
+      & not (Ex #j. KeyActiveMC(MC, SAT, k) @ #j)
+      & not (Ex #r. RetireOldSat(SAT, MC, k) @ #r)
+      & not (Ex A #r. LtkReveal(A) @ #r)
+      & not (Ex M S #p. PskReveal(M, S) @ #p)"
+
+/* --------------------------------------------------------------------------
+   Unchanged from triple_kem_space.spthy.
+   -------------------------------------------------------------------------- */
+lemma replay_resistance_timing_independent:
+    "All SAT MC k #i #j.
+        KeyActiveSat(SAT, MC, k) @ #i & KeyActiveSat(SAT, MC, k) @ #j
+      ==> #i = #j"
+
+lemma key_secrecy:
+    "All k #i.
+        Secret(k) @ #i
+      ==>
+        ( not (Ex #j. K(k) @ #j) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i )"
+
+end

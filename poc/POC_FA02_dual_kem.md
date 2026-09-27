@@ -23,13 +23,15 @@ Two Tamarin attack traces that make precise the boundary the paper states qualit
 ## Build & Run
 
 ```bash
-# from Project_B/models
+# from models/  (Tamarin 1.12.0, Maude 3.1)
 tamarin-prover --prove dual_kem.spthy
 
 tamarin-prover --prove=responder_auth_expected_fail \
-  --output-dot=../traces/fa02_respauth.dot dual_kem.spthy
+  --output-dot=../traces/fa02_respauth.dot \
+  --output-json=../traces/fa02_respauth.json dual_kem.spthy
 tamarin-prover --prove=post_compromise_security_expected_fail \
-  --output-dot=../traces/fa02_pcs.dot dual_kem.spthy
+  --output-dot=../traces/fa02_pcs.dot \
+  --output-json=../traces/fa02_pcs.json dual_kem.spthy
 ```
 
 ## What the traces demonstrate
@@ -49,14 +51,14 @@ So MC believes it has completed an authenticated rekey with the satellite; in re
 ## Confirmed output
 
 ```
-executable (exists-trace): verified
-initiator_auth_holds (all-traces): verified
+executable (exists-trace): verified (7 steps)
+initiator_auth_holds (all-traces): verified (11 steps)
 responder_auth_expected_fail (all-traces): falsified - found trace (14 steps)
-key_secrecy_psk_intact (all-traces): verified
+key_secrecy_psk_intact (all-traces): verified (10 steps)
 post_compromise_security_expected_fail (all-traces): falsified - found trace (15 steps)
 ```
 
-- `initiator_auth_holds` **verified**: MC is still authenticated to SAT (the `c_mc` challenge to MC's long-term key survives) — Dual-KEM only drops *responder* authentication.
+- `initiator_auth_holds` **verified**: MC is still authenticated to SAT (the `c_mc` challenge to MC's long-term key survives), even once the psk leaks — Dual-KEM only drops *responder* authentication. (Corrected in v1.1: the v1.0 form of this lemma checked SAT's own earlier step rather than MC's, and held trivially.)
 - `key_secrecy_psk_intact` **verified**: while the psk is secret, the key is safe.
 - `responder_auth_expected_fail` and `post_compromise_security_expected_fail` **falsified with traces**: once the psk leaks, both fail.
 

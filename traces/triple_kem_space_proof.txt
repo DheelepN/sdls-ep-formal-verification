@@ -3,8 +3,6 @@ maude tool: 'maude'
  checking installation: OK.
 [Theory triple_kem_space] Theory loaded
 [Theory triple_kem_space] Theory translated
-[Theory triple_kem_space] Derivation checks started
-[Theory triple_kem_space] Derivation checks ended
 [Theory triple_kem_space] Theory closed
 [Saturating Sources] Step 1 (Max 5)
 [Saturating Sources] Done
@@ -554,9 +552,9 @@ end
 ==============================================================================
 summary of summaries:
 
-analyzed: triple_kem_space.spthy
+analyzed: models/triple_kem_space.spthy
 
-  processing time: 12.50s
+  processing time: 1.19s
   
   executable (exists-trace): verified (8 steps)
   rekey_atomicity (all-traces): falsified - found trace (5 steps)

@@ -1405,6 +1405,195 @@
                             {
                                 "jgnFactId": "action",
                                 "jgnFactMult": "",
+                                "jgnFactName": "Running",
+                                "jgnFactShow": "Running( $MC, $SAT, <'MCtoSAT', kdf(<~psk, z, z.1, h(<pk(~ske), aenc(z, pk(~ske)), aenc(z.1, pk(~ltk))>)>), h(<pk(~ske), aenc(z, pk(~ske)), aenc(z.1, pk(~ltk))>)>)",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "$MC"
+                                    },
+                                    {
+                                        "jgnConst": "$SAT"
+                                    },
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "'MCtoSAT'"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnFunct": "kdf",
+                                                        "jgnParams": [
+                                                            {
+                                                                "jgnFunct": "pair",
+                                                                "jgnParams": [
+                                                                    {
+                                                                        "jgnConst": "~psk"
+                                                                    },
+                                                                    {
+                                                                        "jgnFunct": "pair",
+                                                                        "jgnParams": [
+                                                                            {
+                                                                                "jgnConst": "z"
+                                                                            },
+                                                                            {
+                                                                                "jgnFunct": "pair",
+                                                                                "jgnParams": [
+                                                                                    {
+                                                                                        "jgnConst": "z.1"
+                                                                                    },
+                                                                                    {
+                                                                                        "jgnFunct": "h",
+                                                                                        "jgnParams": [
+                                                                                            {
+                                                                                                "jgnFunct": "pair",
+                                                                                                "jgnParams": [
+                                                                                                    {
+                                                                                                        "jgnFunct": "pk",
+                                                                                                        "jgnParams": [
+                                                                                                            {
+                                                                                                                "jgnConst": "~ske"
+                                                                                                            }
+                                                                                                        ],
+                                                                                                        "jgnShow": "pk(~ske)"
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "jgnFunct": "pair",
+                                                                                                        "jgnParams": [
+                                                                                                            {
+                                                                                                                "jgnFunct": "aenc",
+                                                                                                                "jgnParams": [
+                                                                                                                    {
+                                                                                                                        "jgnConst": "z"
+                                                                                                                    },
+                                                                                                                    {
+                                                                                                                        "jgnFunct": "pk",
+                                                                                                                        "jgnParams": [
+                                                                                                                            {
+                                                                                                                                "jgnConst": "~ske"
+                                                                                                                            }
+                                                                                                                        ],
+                                                                                                                        "jgnShow": "pk(~ske)"
+                                                                                                                    }
+                                                                                                                ],
+                                                                                                                "jgnShow": "aenc(z,pk(~ske))"
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "jgnFunct": "aenc",
+                                                                                                                "jgnParams": [
+                                                                                                                    {
+                                                                                                                        "jgnConst": "z.1"
+                                                                                                                    },
+                                                                                                                    {
+                                                                                                                        "jgnFunct": "pk",
+                                                                                                                        "jgnParams": [
+                                                                                                                            {
+                                                                                                                                "jgnConst": "~ltk"
+                                                                                                                            }
+                                                                                                                        ],
+                                                                                                                        "jgnShow": "pk(~ltk)"
+                                                                                                                    }
+                                                                                                                ],
+                                                                                                                "jgnShow": "aenc(z.1,pk(~ltk))"
+                                                                                                            }
+                                                                                                        ],
+                                                                                                        "jgnShow": "pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk)))"
+                                                                                                    }
+                                                                                                ],
+                                                                                                "jgnShow": "pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk))))"
+                                                                                            }
+                                                                                        ],
+                                                                                        "jgnShow": "h(pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk)))))"
+                                                                                    }
+                                                                                ],
+                                                                                "jgnShow": "pair(z.1,h(pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk))))))"
+                                                                            }
+                                                                        ],
+                                                                        "jgnShow": "pair(z,pair(z.1,h(pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk)))))))"
+                                                                    }
+                                                                ],
+                                                                "jgnShow": "pair(~psk,pair(z,pair(z.1,h(pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk))))))))"
+                                                            }
+                                                        ],
+                                                        "jgnShow": "kdf(pair(~psk,pair(z,pair(z.1,h(pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk)))))))))"
+                                                    },
+                                                    {
+                                                        "jgnFunct": "h",
+                                                        "jgnParams": [
+                                                            {
+                                                                "jgnFunct": "pair",
+                                                                "jgnParams": [
+                                                                    {
+                                                                        "jgnFunct": "pk",
+                                                                        "jgnParams": [
+                                                                            {
+                                                                                "jgnConst": "~ske"
+                                                                            }
+                                                                        ],
+                                                                        "jgnShow": "pk(~ske)"
+                                                                    },
+                                                                    {
+                                                                        "jgnFunct": "pair",
+                                                                        "jgnParams": [
+                                                                            {
+                                                                                "jgnFunct": "aenc",
+                                                                                "jgnParams": [
+                                                                                    {
+                                                                                        "jgnConst": "z"
+                                                                                    },
+                                                                                    {
+                                                                                        "jgnFunct": "pk",
+                                                                                        "jgnParams": [
+                                                                                            {
+                                                                                                "jgnConst": "~ske"
+                                                                                            }
+                                                                                        ],
+                                                                                        "jgnShow": "pk(~ske)"
+                                                                                    }
+                                                                                ],
+                                                                                "jgnShow": "aenc(z,pk(~ske))"
+                                                                            },
+                                                                            {
+                                                                                "jgnFunct": "aenc",
+                                                                                "jgnParams": [
+                                                                                    {
+                                                                                        "jgnConst": "z.1"
+                                                                                    },
+                                                                                    {
+                                                                                        "jgnFunct": "pk",
+                                                                                        "jgnParams": [
+                                                                                            {
+                                                                                                "jgnConst": "~ltk"
+                                                                                            }
+                                                                                        ],
+                                                                                        "jgnShow": "pk(~ltk)"
+                                                                                    }
+                                                                                ],
+                                                                                "jgnShow": "aenc(z.1,pk(~ltk))"
+                                                                            }
+                                                                        ],
+                                                                        "jgnShow": "pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk)))"
+                                                                    }
+                                                                ],
+                                                                "jgnShow": "pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk))))"
+                                                            }
+                                                        ],
+                                                        "jgnShow": "h(pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk)))))"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(kdf(pair(~psk,pair(z,pair(z.1,h(pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk))))))))),h(pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk))))))"
+                                            }
+                                        ],
+                                        "jgnShow": "pair('MCtoSAT',pair(kdf(pair(~psk,pair(z,pair(z.1,h(pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk))))))))),h(pair(pk(~ske),pair(aenc(z,pk(~ske)),aenc(z.1,pk(~ltk)))))))"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
                                 "jgnFactName": "Commit",
                                 "jgnFactShow": "Commit( $MC, $SAT, <'MCtoSAT', kdf(<~psk, z, z.1, h(<pk(~ske), aenc(z, pk(~ske)), aenc(z.1, pk(~ltk))>)>), h(<pk(~ske), aenc(z, pk(~ske)), aenc(z.1, pk(~ltk))>)>)",
                                 "jgnFactTag": "ProtoFact",

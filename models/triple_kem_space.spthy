@@ -31,6 +31,18 @@
   non-recoverable rekey desynchronisation. We show rekey atomicity is FALSE and
   give the trace. We also confirm replay resistance holds with NO timing
   assumption (important because deep-space round trips are minutes to hours).
+
+  Reading the result honestly:
+    * The counterexample to rekey_atomicity is simply M3 not being delivered;
+      it does not need Pass_ends, and would appear in triple_kem.spthy too.
+      What the space model adds is that the loss is final for the session:
+      desync_reachable shows it with the pass closed and no retry.
+    * "Non-recoverable" is a property of the specification, not something
+      Tamarin derives: the proposal defines no recovery step, so the model
+      has none. The finding is that one is needed.
+    * No finite number of messages can make the switch atomic over a lossy
+      channel. See triple_kem_space_4pass.spthy for the four-message fix and
+      the condition (SAT keeps the old key) under which it is safe.
   ============================================================================
 */
 
