@@ -3,12 +3,7 @@ maude tool: 'maude'
  checking installation: OK.
 [Theory e2eqss] Theory loaded
 [Theory e2eqss] Theory translated
-[Theory e2eqss] Derivation checks started
-[Theory e2eqss] Derivation checks ended
 [Theory e2eqss] Theory closed
-[Saturating Sources] Step 1 (Max 5)
-[Saturating Sources] Done
-[Saturating Sources] Step 1 (Max 5)
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
@@ -23,6 +18,7 @@ maude tool: 'maude'
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
+[Saturating Sources] Step 1 (Max 5)
 [Saturating Sources] Done
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
@@ -67,24 +63,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
-1: !Pk( 'CA', pk(x) ) ▶₁ #i
-2: !KU( kdf(<~ss_ltSAT, z, z.1, z.2,           h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk, c_ltSAT,              c_eph, c_dh, c_ltMC>)         >)) @ #vk.12
-3: splitEqs(0)
-4: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.14
-5: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.4
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-4
-1
-3
-5
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.14
@@ -107,6 +85,24 @@ maude tool: 'maude'
 6
 7
 9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
+1: !Pk( 'CA', pk(x) ) ▶₁ #i
+2: !KU( kdf(<~ss_ltSAT, z, z.1, z.2,           h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk, c_ltSAT,              c_eph, c_dh, c_ltMC>)         >)) @ #vk.12
+3: splitEqs(0)
+4: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.14
+5: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.4
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+4
+1
+3
+5
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -137,6 +133,28 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.16
+3: !KU( pk(~eph_sk) ) @ #vk.18
+4: !KU( pk(~dh_sk) ) @ #vk.19
+5: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
+6: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+7: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: splitEqs(1)
 3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.16
 4: !KU( pk(~eph_sk) ) @ #vk.19
@@ -159,170 +177,6 @@ maude tool: 'maude'
 10
 7
 9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.16
-4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.22
-5: !KU( pk(~eph_sk) ) @ #vk.18
-6: !KU( pk(~dh_sk) ) @ #vk.20
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.8
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
-9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
-11: !KU( pk(~kem) ) @ #vk.24
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-9
-0
-1
-2
-3
-4
-5
-6
-7
-11
-8
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.16
-4: !KU( pk(~eph_sk) ) @ #vk.19
-5: !KU( pk(~dh_sk) ) @ #vk.21
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.8
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
-8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
-10: !KU( pk(~kem) ) @ #vk.25
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-8
-0
-1
-2
-3
-4
-5
-6
-10
-7
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.16
-4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.22
-5: !KU( pk(~eph_sk) ) @ #vk.18
-6: !KU( pk(~dh_sk) ) @ #vk.20
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.8
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
-9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
-11: !KU( pk(~kem) ) @ #vk.26
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-9
-0
-1
-2
-3
-4
-5
-6
-7
-11
-8
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.8
-4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
-5: !KU( pk(~eph_sk) ) @ #vk.19
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.10
-8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.11
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-8
-0
-1
-2
-3
-4
-5
-6
-7
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( ~ss_ltSAT ) @ #vk.20
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.15
-4: !KU( pk(~eph_sk) ) @ #vk.17
-5: !KU( pk(~dh_sk) ) @ #vk.19
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.8
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
-8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
-10: !KU( pk(~kem) ) @ #vk.21
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-8
-0
-1
-3
-4
-5
-6
-10
-7
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.16
-3: !KU( pk(~eph_sk) ) @ #vk.18
-4: !KU( pk(~dh_sk) ) @ #vk.19
-5: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
-6: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-7: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -375,6 +229,36 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.16
+4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.22
+5: !KU( pk(~eph_sk) ) @ #vk.18
+6: !KU( pk(~dh_sk) ) @ #vk.20
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.8
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
+9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
+11: !KU( pk(~kem) ) @ #vk.24
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+9
+0
+1
+2
+3
+4
+5
+6
+7
+11
+8
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: !KU( ~dh_sk ) @ #vk.21
 3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.18
 4: !KU( pk(~eph_sk) ) @ #vk.19
@@ -391,6 +275,32 @@ maude tool: 'maude'
 4
 5
 6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
+4: !KU( pk(~eph_sk) ) @ #vk.20
+5: !KU( pk(~dh_sk) ) @ #vk.21
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
+9: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+9
 7
 8
 
@@ -428,32 +338,6 @@ maude tool: 'maude'
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
-4: !KU( pk(~eph_sk) ) @ #vk.20
-5: !KU( pk(~dh_sk) ) @ #vk.21
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
-9: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-9
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
 3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
 4: !KU( pk(~eph_sk) ) @ #vk.21
 5: !KU( pk(~dh_sk) ) @ #vk.22
@@ -479,6 +363,34 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.16
+4: !KU( pk(~eph_sk) ) @ #vk.19
+5: !KU( pk(~dh_sk) ) @ #vk.21
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.8
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
+8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
+10: !KU( pk(~kem) ) @ #vk.25
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+8
+0
+1
+2
+3
+4
+5
+6
+10
+7
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: !KU( ~dh_sk ) @ #vk.28
 3: splitEqs(1)
 4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
@@ -494,6 +406,34 @@ maude tool: 'maude'
 1
 3
 2
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
+4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.22
+5: !KU( pk(~eph_sk) ) @ #vk.19
+6: !KU( pk(~dh_sk) ) @ #vk.20
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
+10: !KU( pk(~kem) ) @ #vk.24
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
 4
 5
 6
@@ -538,34 +478,6 @@ maude tool: 'maude'
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
-4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.22
-5: !KU( pk(~eph_sk) ) @ #vk.19
-6: !KU( pk(~dh_sk) ) @ #vk.20
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
-10: !KU( pk(~kem) ) @ #vk.24
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
 3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
 4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.23
 5: !KU( pk(~eph_sk) ) @ #vk.20
@@ -587,6 +499,36 @@ maude tool: 'maude'
 10
 8
 9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.16
+4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.22
+5: !KU( pk(~eph_sk) ) @ #vk.18
+6: !KU( pk(~dh_sk) ) @ #vk.20
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.8
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
+9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
+11: !KU( pk(~kem) ) @ #vk.26
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+9
+0
+1
+2
+3
+4
+5
+6
+7
+11
+8
+10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -703,6 +645,60 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.8
+4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
+5: !KU( pk(~eph_sk) ) @ #vk.19
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.10
+8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.11
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+8
+0
+1
+2
+3
+4
+5
+6
+7
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: !KU( ~ss_ltSAT ) @ #vk.20
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.15
+4: !KU( pk(~eph_sk) ) @ #vk.17
+5: !KU( pk(~dh_sk) ) @ #vk.19
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.8
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
+8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
+10: !KU( pk(~kem) ) @ #vk.21
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+8
+0
+1
+3
+4
+5
+6
+10
+7
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: !KU( ~dh_sk ) @ #vk.28
 3: splitEqs(1)
 4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
@@ -718,6 +714,34 @@ maude tool: 'maude'
 1
 3
 2
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
+4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.22
+5: !KU( pk(~eph_sk) ) @ #vk.19
+6: !KU( pk(~dh_sk) ) @ #vk.20
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
+10: !KU( pk(~kem) ) @ #vk.26
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
 4
 5
 6
@@ -755,34 +779,6 @@ maude tool: 'maude'
 11
 9
 10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
-4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.22
-5: !KU( pk(~eph_sk) ) @ #vk.19
-6: !KU( pk(~dh_sk) ) @ #vk.20
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
-10: !KU( pk(~kem) ) @ #vk.26
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -947,62 +943,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( ~kemMC ) @ #vk.22
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
-4: !KU( pk(~eph_sk) ) @ #vk.19
-5: !KU( pk(~dh_sk) ) @ #vk.20
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
-10: !KU( pk(~kem) ) @ #vk.21
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-8
-0
-1
-2
-3
-4
-5
-6
-10
-7
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.18
-4: !KU( pk(~eph_sk) ) @ #vk.21
-5: !KU( pk(~dh_sk) ) @ #vk.22
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
-10: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-8
-0
-1
-2
-3
-4
-5
-6
-10
-7
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: !KU( ~kem.2 ) @ #vk.22
 3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
 4: !KU( pk(~eph_sk) ) @ #vk.19
@@ -1089,19 +1029,18 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.18
-4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
-11: !KU( pk(~kem) ) @ #vk.22
+2: !KU( ~kemMC ) @ #vk.22
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.17
+4: !KU( pk(~eph_sk) ) @ #vk.19
+5: !KU( pk(~dh_sk) ) @ #vk.20
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
+10: !KU( pk(~kem) ) @ #vk.21
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-9
+8
 0
 1
 2
@@ -1109,10 +1048,9 @@ maude tool: 'maude'
 4
 5
 6
-7
-11
-8
 10
+7
+9
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -1171,6 +1109,64 @@ maude tool: 'maude'
 11
 8
 10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.18
+4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+9
+0
+1
+2
+3
+4
+5
+6
+7
+11
+8
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.18
+4: !KU( pk(~eph_sk) ) @ #vk.21
+5: !KU( pk(~dh_sk) ) @ #vk.22
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
+10: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+8
+0
+1
+2
+3
+4
+5
+6
+10
+7
+9
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -1357,32 +1353,26 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( ~kem.2 ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.18
-5: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.24
-6: !KU( pk(~eph_sk) ) @ #vk.20
-7: !KU( pk(~dh_sk) ) @ #vk.21
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-10: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
-11: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
-12: !KU( pk(~kem) ) @ #vk.22
+2: !KU( ~kemMC ) @ #vk.22
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.18
+4: !KU( pk(~eph_sk) ) @ #vk.19
+5: !KU( pk(~dh_sk) ) @ #vk.20
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+9: !KU( pk(~kem) ) @ #vk.21
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-10
 0
 1
-3
 2
+3
 4
 5
 6
+9
 7
 8
-12
-9
-11
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -1415,26 +1405,32 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( ~kemMC ) @ #vk.22
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.18
-4: !KU( pk(~eph_sk) ) @ #vk.19
-5: !KU( pk(~dh_sk) ) @ #vk.20
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-9: !KU( pk(~kem) ) @ #vk.21
+2: !KU( ~kem.2 ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.18
+5: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.24
+6: !KU( pk(~eph_sk) ) @ #vk.20
+7: !KU( pk(~dh_sk) ) @ #vk.21
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.10
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+10: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
+11: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
+12: !KU( pk(~kem) ) @ #vk.22
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+10
 0
 1
-2
 3
+2
 4
 5
 6
-9
 7
 8
+12
+9
+11
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -1631,32 +1627,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
-4: !KU( pk(~eph_sk) ) @ #vk.21
-5: !KU( pk(~dh_sk) ) @ #vk.22
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-9: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-9
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: !KU( ~ss_dh ) @ #vk.29
 3: splitEqs(1)
 4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
@@ -1679,6 +1649,32 @@ maude tool: 'maude'
 10
 8
 9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
+4: !KU( pk(~eph_sk) ) @ #vk.21
+5: !KU( pk(~dh_sk) ) @ #vk.22
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+9: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+9
+7
+8
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -1733,230 +1729,6 @@ maude tool: 'maude'
 9
 7
 8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( ~ss_dh ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
-5: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~kemMC) ) @ #vk.24
-6: !KU( pk(~eph_sk) ) @ #vk.20
-7: !KU( pk(~dh_sk) ) @ #vk.21
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
-4: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~kemMC) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( ~dh_sk ) @ #vk.31
-3: splitEqs(1)
-4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
-5: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~kemMC) ) @ #vk.25
-6: !KU( pk(~eph_sk) ) @ #vk.21
-7: !KU( pk(~dh_sk) ) @ #vk.22
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-3
-2
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
-4: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~kemMC) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
-4: !KU( pk(~eph_sk) ) @ #vk.21
-5: !KU( pk(~dh_sk) ) @ #vk.22
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-9: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-9
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( ~ss_dh ) @ #vk.29
-3: splitEqs(1)
-4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
-4: !KU( pk(~eph_sk) ) @ #vk.22
-5: !KU( pk(~dh_sk) ) @ #vk.23
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-9: !KU( pk(~kem) ) @ #vk.24
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-9
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( ~dh_sk ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
-5: !KU( pk(~eph_sk) ) @ #vk.22
-6: !KU( pk(~dh_sk) ) @ #vk.23
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.24
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-3
-2
-4
-5
-6
-7
-10
-8
-9
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -2133,32 +1905,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
-4: !KU( pk(~eph_sk) ) @ #vk.22
-5: !KU( pk(~dh_sk) ) @ #vk.23
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-9: !KU( pk(~kem) ) @ #vk.24
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-9
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: !KU( ~dh_sk ) @ #vk.30
 3: splitEqs(1)
 4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
@@ -2181,6 +1927,32 @@ maude tool: 'maude'
 10
 8
 9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
+4: !KU( pk(~eph_sk) ) @ #vk.22
+5: !KU( pk(~dh_sk) ) @ #vk.23
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+9: !KU( pk(~kem) ) @ #vk.24
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+9
+7
+8
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -2297,6 +2069,230 @@ maude tool: 'maude'
 11
 9
 10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: !KU( ~ss_dh ) @ #vk.29
+3: splitEqs(1)
+4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
+4: !KU( pk(~eph_sk) ) @ #vk.21
+5: !KU( pk(~dh_sk) ) @ #vk.22
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+9: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+9
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: !KU( ~dh_sk ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
+5: !KU( pk(~eph_sk) ) @ #vk.22
+6: !KU( pk(~dh_sk) ) @ #vk.23
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.24
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+3
+2
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
+4: !KU( pk(~eph_sk) ) @ #vk.22
+5: !KU( pk(~dh_sk) ) @ #vk.23
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+9: !KU( pk(~kem) ) @ #vk.24
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+9
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
+4: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~kemMC) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: !KU( ~ss_dh ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
+5: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~kemMC) ) @ #vk.24
+6: !KU( pk(~eph_sk) ) @ #vk.20
+7: !KU( pk(~dh_sk) ) @ #vk.21
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: !KU( ~dh_sk ) @ #vk.31
+3: splitEqs(1)
+4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
+5: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~kemMC) ) @ #vk.25
+6: !KU( pk(~eph_sk) ) @ #vk.21
+7: !KU( pk(~dh_sk) ) @ #vk.22
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+11: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+3
+2
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
+4: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~kemMC) ) @ #vk.25
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -2353,30 +2349,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
-3: !KU( pk(~eph_sk) ) @ #vk.20
-4: !KU( pk(~dh_sk) ) @ #vk.21
-5: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
-6: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-7: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-8: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-8
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: !KU( ~dh_sk ) @ #vk.23
 3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
 4: !KU( pk(~eph_sk) ) @ #vk.20
@@ -2397,6 +2369,30 @@ maude tool: 'maude'
 9
 7
 8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
+3: !KU( pk(~eph_sk) ) @ #vk.20
+4: !KU( pk(~dh_sk) ) @ #vk.21
+5: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
+6: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+7: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+8: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+8
+6
+7
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -2461,6 +2457,34 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
+4: !KU( pk(~eph_sk) ) @ #vk.22
+5: !KU( pk(~dh_sk) ) @ #vk.23
+6: !KU( pk(x) ) @ #vk.26
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.24
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: !KU( ~dh_sk ) @ #vk.31
 3: splitEqs(1)
 4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
@@ -2485,34 +2509,6 @@ maude tool: 'maude'
 11
 9
 10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
-4: !KU( pk(~eph_sk) ) @ #vk.22
-5: !KU( pk(~dh_sk) ) @ #vk.23
-6: !KU( pk(x) ) @ #vk.26
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.24
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -2581,36 +2577,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
-4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( pk(x) ) @ #vk.27
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: !KU( ~dh_sk ) @ #vk.32
 3: splitEqs(1)
 4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
@@ -2643,21 +2609,21 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: !KU( ~ss_dh ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
+4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.25
 5: !KU( pk(~eph_sk) ) @ #vk.21
 6: !KU( pk(~dh_sk) ) @ #vk.22
 7: !KU( pk(x) ) @ #vk.27
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
 11: !KU( pk(~kem) ) @ #vk.23
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
 0
 1
+2
 3
 4
 5
@@ -2701,28 +2667,30 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
-4: !KU( pk(~eph_sk) ) @ #vk.22
-5: !KU( pk(~dh_sk) ) @ #vk.23
-6: !KU( pk(x) ) @ #vk.28
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.24
+2: !KU( ~ss_dh ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( pk(x) ) @ #vk.27
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.23
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
 0
 1
-2
 3
 4
 5
 6
 7
-10
 8
+11
 9
+10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -2760,15 +2728,14 @@ maude tool: 'maude'
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
 2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
-4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( pk(x) ) @ #vk.28
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.20
+4: !KU( pk(~eph_sk) ) @ #vk.22
+5: !KU( pk(~dh_sk) ) @ #vk.23
+6: !KU( pk(x) ) @ #vk.28
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.24
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
@@ -2779,10 +2746,9 @@ maude tool: 'maude'
 5
 6
 7
-8
-11
-9
 10
+8
+9
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -2815,6 +2781,36 @@ maude tool: 'maude'
 12
 10
 11
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~kemMC) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~kemMC)>, ~kemMC) ) @ #vk.19
+4: !KU( sign(<'cert', $MC.1, pk(~kem.2)>, ~kemMC) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( pk(x) ) @ #vk.28
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~kemMC) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+8
+11
+9
+10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -3247,28 +3243,30 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~ss_ltSAT ) @ #vk.20
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.15
-4: !KU( pk(~eph_sk) ) @ #vk.17
-5: !KU( pk(~dh_sk) ) @ #vk.19
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.8
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
-8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
-10: !KU( pk(~kem) ) @ #vk.21
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.16
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.22
+5: !KU( pk(~eph_sk) ) @ #vk.18
+6: !KU( pk(~dh_sk) ) @ #vk.20
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.8
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
+9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
+11: !KU( pk(~kem) ) @ #vk.26
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-8
+9
 0
 1
+2
 3
 4
 5
 6
-10
 7
-9
+11
+8
+10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -3284,7 +3282,7 @@ maude tool: 'maude'
 8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
 9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
 10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
-11: !KU( pk(~kem) ) @ #vk.26
+11: !KU( pk(~kem) ) @ #vk.24
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 9
@@ -3337,14 +3335,14 @@ maude tool: 'maude'
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: splitEqs(1)
 3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.16
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.22
+4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.22
 5: !KU( pk(~eph_sk) ) @ #vk.18
 6: !KU( pk(~dh_sk) ) @ #vk.20
 7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.8
 8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
 9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
 10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
-11: !KU( pk(~kem) ) @ #vk.24
+11: !KU( pk(~kem) ) @ #vk.26
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 9
@@ -3391,30 +3389,28 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.16
-4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.22
-5: !KU( pk(~eph_sk) ) @ #vk.18
-6: !KU( pk(~dh_sk) ) @ #vk.20
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.8
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
-9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
-11: !KU( pk(~kem) ) @ #vk.26
+2: !KU( ~ss_ltSAT ) @ #vk.20
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.15
+4: !KU( pk(~eph_sk) ) @ #vk.17
+5: !KU( pk(~dh_sk) ) @ #vk.19
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.8
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.9
+8: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.10
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.11
+10: !KU( pk(~kem) ) @ #vk.21
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-9
+2
+8
 0
 1
-2
 3
 4
 5
 6
-7
-11
-8
 10
+7
+9
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -3629,6 +3625,34 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.17
+4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.22
+5: !KU( pk(~eph_sk) ) @ #vk.19
+6: !KU( pk(~dh_sk) ) @ #vk.20
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
+10: !KU( pk(~kem) ) @ #vk.24
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: !KU( ~ss_dh ) @ #vk.28
 3: splitEqs(1)
 4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.17
@@ -3660,14 +3684,14 @@ maude tool: 'maude'
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.17
-4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.22
-5: !KU( pk(~eph_sk) ) @ #vk.19
-6: !KU( pk(~dh_sk) ) @ #vk.20
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
-10: !KU( pk(~kem) ) @ #vk.24
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.23
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.25
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
@@ -3717,28 +3741,30 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.23
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.25
+2: !KU( ~ss_dh ) @ #vk.28
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.17
+5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.22
+6: !KU( pk(~eph_sk) ) @ #vk.19
+7: !KU( pk(~dh_sk) ) @ #vk.20
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
+11: !KU( pk(~kem) ) @ #vk.26
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
 0
 1
-2
 3
 4
 5
 6
 7
-10
 8
+11
 9
+10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -3767,36 +3793,6 @@ maude tool: 'maude'
 10
 8
 9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~ss_dh ) @ #vk.28
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.17
-5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.22
-6: !KU( pk(~eph_sk) ) @ #vk.19
-7: !KU( pk(~dh_sk) ) @ #vk.20
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.12
-11: !KU( pk(~kem) ) @ #vk.26
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-8
-11
-9
-10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -3919,6 +3915,34 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.23
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.27
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: !KU( ~dh_sk ) @ #vk.29
 3: splitEqs(1)
 4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
@@ -3943,34 +3967,6 @@ maude tool: 'maude'
 11
 9
 10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.23
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.27
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -4107,36 +4103,6 @@ maude tool: 'maude'
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: splitEqs(1)
 3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-9
-0
-1
-2
-3
-4
-5
-6
-7
-11
-8
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
 4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
 5: !KU( pk(~eph_sk) ) @ #vk.20
 6: !KU( pk(~dh_sk) ) @ #vk.21
@@ -4225,37 +4191,7 @@ maude tool: 'maude'
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: splitEqs(1)
 3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
-4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-9
-0
-1
-2
-3
-4
-5
-6
-7
-11
-8
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
-4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
 5: !KU( pk(~eph_sk) ) @ #vk.20
 6: !KU( pk(~dh_sk) ) @ #vk.21
 7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
@@ -4318,15 +4254,14 @@ maude tool: 'maude'
 4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
 5: !KU( pk(~eph_sk) ) @ #vk.20
 6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( pk(x) ) @ #vk.28
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-10: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
-11: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
-12: !KU( pk(~kem) ) @ #vk.22
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
+11: !KU( pk(~kem) ) @ #vk.22
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-10
+9
 0
 1
 2
@@ -4335,36 +4270,39 @@ maude tool: 'maude'
 5
 6
 7
-8
-12
-9
 11
+8
+10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.17
-3: !KU( pk(~eph_sk) ) @ #vk.19
-4: !KU( pk(~dh_sk) ) @ #vk.20
-5: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
-6: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-7: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
-8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
-9: !KU( pk(~kem) ) @ #vk.21
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
+4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+9: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
+11: !KU( pk(~kem) ) @ #vk.22
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-7
+9
 0
 1
 2
 3
 4
 5
-9
 6
+7
+11
 8
+10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -4429,9 +4367,127 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~skCA ) @ #vk.22
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
+4: !KU( pk(~eph_sk) ) @ #vk.19
+5: !KU( pk(~dh_sk) ) @ #vk.20
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+9: !KU( pk(~kem) ) @ #vk.21
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+9
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~skCA ) @ #vk.22
+3: !KU( ~ss_dh ) @ #vk.23
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
+5: !KU( pk(~eph_sk) ) @ #vk.19
+6: !KU( pk(~dh_sk) ) @ #vk.20
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.21
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+0
+1
+2
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
+4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( pk(x) ) @ #vk.26
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+10: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
+11: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
+12: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+10
+0
+1
+2
+3
+4
+5
+6
+7
+8
+12
+9
+11
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: splitEqs(1)
 3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
 4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( pk(x) ) @ #vk.28
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+10: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
+11: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
+12: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+10
+0
+1
+2
+3
+4
+5
+6
+7
+8
+12
+9
+11
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
+4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
 5: !KU( pk(~eph_sk) ) @ #vk.20
 6: !KU( pk(~dh_sk) ) @ #vk.21
 7: !KU( pk(x) ) @ #vk.28
@@ -4493,38 +4549,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
-4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( pk(x) ) @ #vk.26
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
-10: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
-11: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
-12: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-10
-0
-1
-2
-3
-4
-5
-6
-7
-8
-12
-9
-11
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: !KU( ~kem.2 ) @ #vk.30
 3: splitEqs(1)
 4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
@@ -4557,60 +4581,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~skCA ) @ #vk.22
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
-4: !KU( pk(~eph_sk) ) @ #vk.19
-5: !KU( pk(~dh_sk) ) @ #vk.20
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-9: !KU( pk(~kem) ) @ #vk.21
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-9
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~skCA ) @ #vk.22
-3: !KU( ~ss_dh ) @ #vk.23
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
-5: !KU( pk(~eph_sk) ) @ #vk.19
-6: !KU( pk(~dh_sk) ) @ #vk.20
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.21
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-3
-0
-1
-2
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: !KU( ~skCA ) @ #vk.23
 3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
 4: !KU( pk(~eph_sk) ) @ #vk.20
@@ -4637,845 +4607,41 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~skCA ) @ #vk.23
-3: !KU( ~dh_sk ) @ #vk.24
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~kem.2 ) @ #vk.22
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
-4: !KU( pk(~eph_sk) ) @ #vk.19
-5: !KU( pk(~dh_sk) ) @ #vk.20
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-9: !KU( pk(~kem) ) @ #vk.21
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-9
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~kem.2 ) @ #vk.22
-3: !KU( ~ss_dh ) @ #vk.23
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
-5: !KU( pk(~eph_sk) ) @ #vk.19
-6: !KU( pk(~dh_sk) ) @ #vk.20
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.21
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-3
-0
-1
-2
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~kem.2 ) @ #vk.23
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( pk(~eph_sk) ) @ #vk.20
-5: !KU( pk(~dh_sk) ) @ #vk.21
-6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-9: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-9
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~kem.2 ) @ #vk.23
-3: !KU( ~dh_sk ) @ #vk.24
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~ss_dh ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
-6: !KU( pk(~eph_sk) ) @ #vk.20
-7: !KU( pk(~dh_sk) ) @ #vk.21
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~dh_sk ) @ #vk.31
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
-6: !KU( pk(~eph_sk) ) @ #vk.21
-7: !KU( pk(~dh_sk) ) @ #vk.22
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-3
-2
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~ss_dh ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
-6: !KU( pk(~eph_sk) ) @ #vk.20
-7: !KU( pk(~dh_sk) ) @ #vk.21
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~dh_sk ) @ #vk.31
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
-6: !KU( pk(~eph_sk) ) @ #vk.21
-7: !KU( pk(~dh_sk) ) @ #vk.22
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-3
-2
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~ss_dh ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
-6: !KU( pk(~eph_sk) ) @ #vk.20
-7: !KU( pk(~dh_sk) ) @ #vk.21
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~dh_sk ) @ #vk.31
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
-6: !KU( pk(~eph_sk) ) @ #vk.21
-7: !KU( pk(~dh_sk) ) @ #vk.22
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-3
-2
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~ss_dh ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
-6: !KU( pk(~eph_sk) ) @ #vk.20
-7: !KU( pk(~dh_sk) ) @ #vk.21
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~dh_sk ) @ #vk.31
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
-6: !KU( pk(~eph_sk) ) @ #vk.21
-7: !KU( pk(~dh_sk) ) @ #vk.22
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-3
-2
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~ss_dh ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
-6: !KU( pk(~eph_sk) ) @ #vk.20
-7: !KU( pk(~dh_sk) ) @ #vk.21
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~dh_sk ) @ #vk.31
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
-6: !KU( pk(~eph_sk) ) @ #vk.21
-7: !KU( pk(~dh_sk) ) @ #vk.22
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-3
-2
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-10: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~ss_dh ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
-6: !KU( pk(~eph_sk) ) @ #vk.20
-7: !KU( pk(~dh_sk) ) @ #vk.21
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-10: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-10
-8
-9
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~dh_sk ) @ #vk.31
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
-6: !KU( pk(~eph_sk) ) @ #vk.21
-7: !KU( pk(~dh_sk) ) @ #vk.22
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-3
-2
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
+2: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.17
 3: !KU( pk(~eph_sk) ) @ #vk.19
 4: !KU( pk(~dh_sk) ) @ #vk.20
-5: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-6: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-7: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-8: !KU( pk(~kem) ) @ #vk.21
+5: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.10
+6: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.11
+7: !KU( aenc(~ss_dh, pk(~dh_sk)) ) @ #vk.12
+8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.13
+9: !KU( pk(~kem) ) @ #vk.21
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+7
+0
+1
+2
+3
+4
+5
+9
+6
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~skCA ) @ #vk.23
+3: !KU( ~dh_sk ) @ #vk.24
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.22
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
@@ -5484,9 +4650,815 @@ maude tool: 'maude'
 3
 4
 5
-8
 6
 7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~kem.2 ) @ #vk.22
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
+4: !KU( pk(~eph_sk) ) @ #vk.19
+5: !KU( pk(~dh_sk) ) @ #vk.20
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+9: !KU( pk(~kem) ) @ #vk.21
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+9
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~kem.2 ) @ #vk.22
+3: !KU( ~ss_dh ) @ #vk.23
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
+5: !KU( pk(~eph_sk) ) @ #vk.19
+6: !KU( pk(~dh_sk) ) @ #vk.20
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.21
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+0
+1
+2
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~kem.2 ) @ #vk.23
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( pk(~eph_sk) ) @ #vk.20
+5: !KU( pk(~dh_sk) ) @ #vk.21
+6: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+7: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+8: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+9: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+9
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~kem.2 ) @ #vk.23
+3: !KU( ~dh_sk ) @ #vk.24
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~ss_dh ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
+6: !KU( pk(~eph_sk) ) @ #vk.20
+7: !KU( pk(~dh_sk) ) @ #vk.21
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~dh_sk ) @ #vk.31
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
+6: !KU( pk(~eph_sk) ) @ #vk.21
+7: !KU( pk(~dh_sk) ) @ #vk.22
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+11: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+3
+2
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~ss_dh ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
+6: !KU( pk(~eph_sk) ) @ #vk.20
+7: !KU( pk(~dh_sk) ) @ #vk.21
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~dh_sk ) @ #vk.31
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
+6: !KU( pk(~eph_sk) ) @ #vk.21
+7: !KU( pk(~dh_sk) ) @ #vk.22
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+11: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+3
+2
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~ss_dh ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
+6: !KU( pk(~eph_sk) ) @ #vk.20
+7: !KU( pk(~dh_sk) ) @ #vk.21
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~dh_sk ) @ #vk.31
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
+6: !KU( pk(~eph_sk) ) @ #vk.21
+7: !KU( pk(~dh_sk) ) @ #vk.22
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+11: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+3
+2
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~ss_dh ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
+6: !KU( pk(~eph_sk) ) @ #vk.20
+7: !KU( pk(~dh_sk) ) @ #vk.21
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~dh_sk ) @ #vk.31
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
+6: !KU( pk(~eph_sk) ) @ #vk.21
+7: !KU( pk(~dh_sk) ) @ #vk.22
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+11: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+3
+2
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~ss_dh ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
+6: !KU( pk(~eph_sk) ) @ #vk.20
+7: !KU( pk(~dh_sk) ) @ #vk.21
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~dh_sk ) @ #vk.31
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
+6: !KU( pk(~eph_sk) ) @ #vk.21
+7: !KU( pk(~dh_sk) ) @ #vk.22
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+11: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+3
+2
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+10: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~ss_dh ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.24
+6: !KU( pk(~eph_sk) ) @ #vk.20
+7: !KU( pk(~dh_sk) ) @ #vk.21
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~dh_sk ) @ #vk.31
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+5: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
+6: !KU( pk(~eph_sk) ) @ #vk.21
+7: !KU( pk(~dh_sk) ) @ #vk.22
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+11: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+3
+2
+4
+5
+6
+7
+8
+11
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+4: !KU( sign(<'cert', $MC.2, pk(~kem.1)>, ~skCA) ) @ #vk.25
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+8: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+9: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+10: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+10
+8
+9
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -5513,6 +5485,30 @@ maude tool: 'maude'
 9
 7
 8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
+3: !KU( pk(~eph_sk) ) @ #vk.19
+4: !KU( pk(~dh_sk) ) @ #vk.20
+5: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+6: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+7: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+8: !KU( pk(~kem) ) @ #vk.21
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+8
+6
+7
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -5569,36 +5565,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( pk(x) ) @ #vk.26
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: !KU( ~ss_dh ) @ #vk.31
 3: splitEqs(1)
 4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
@@ -5632,15 +5598,15 @@ maude tool: 'maude'
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( pk(x) ) @ #vk.27
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( pk(x) ) @ #vk.26
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
@@ -5694,15 +5660,15 @@ maude tool: 'maude'
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( pk(x) ) @ #vk.26
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( pk(x) ) @ #vk.27
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+11: !KU( pk(~kem) ) @ #vk.23
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
@@ -5756,15 +5722,15 @@ maude tool: 'maude'
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( pk(x) ) @ #vk.27
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( pk(x) ) @ #vk.26
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
@@ -5811,6 +5777,36 @@ maude tool: 'maude'
 12
 10
 11
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.25
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( pk(x) ) @ #vk.27
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+11: !KU( pk(~kem) ) @ #vk.23
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+8
+11
+9
+10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -5879,36 +5875,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
-5: !KU( pk(~eph_sk) ) @ #vk.21
-6: !KU( pk(~dh_sk) ) @ #vk.22
-7: !KU( pk(x) ) @ #vk.29
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
-11: !KU( pk(~kem) ) @ #vk.23
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-8
-11
-9
-10
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: !KU( ~dh_sk ) @ #vk.32
 3: splitEqs(1)
 4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
@@ -5942,15 +5908,15 @@ maude tool: 'maude'
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
-5: !KU( pk(~eph_sk) ) @ #vk.20
-6: !KU( pk(~dh_sk) ) @ #vk.21
-7: !KU( pk(x) ) @ #vk.28
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.20
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.25
+5: !KU( pk(~eph_sk) ) @ #vk.21
+6: !KU( pk(~dh_sk) ) @ #vk.22
+7: !KU( pk(x) ) @ #vk.29
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.14
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.15
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.16
+11: !KU( pk(~kem) ) @ #vk.23
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
@@ -5997,6 +5963,36 @@ maude tool: 'maude'
 12
 10
 11
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+4: !KU( sign(<'cert', $MC.2, pk(~kem.2)>, ~skCA) ) @ #vk.24
+5: !KU( pk(~eph_sk) ) @ #vk.20
+6: !KU( pk(~dh_sk) ) @ #vk.21
+7: !KU( pk(x) ) @ #vk.28
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+8
+11
+9
+10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -6059,36 +6055,6 @@ maude tool: 'maude'
 12
 10
 11
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( ~skCA ) @ #vk.30
-3: splitEqs(1)
-4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
-5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
-6: !KU( pk(~eph_sk) ) @ #vk.20
-7: !KU( pk(~dh_sk) ) @ #vk.21
-8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-11: !KU( pk(~kem) ) @ #vk.22
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-3
-2
-4
-5
-6
-7
-8
-11
-9
-10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -6121,6 +6087,36 @@ maude tool: 'maude'
 12
 10
 11
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( ~skCA ) @ #vk.30
+3: splitEqs(1)
+4: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.19
+5: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.24
+6: !KU( pk(~eph_sk) ) @ #vk.20
+7: !KU( pk(~dh_sk) ) @ #vk.21
+8: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+9: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+10: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+11: !KU( pk(~kem) ) @ #vk.22
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+3
+2
+4
+5
+6
+7
+8
+11
+9
+10
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -6313,30 +6309,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
 1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
-2: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
-3: !KU( pk(~eph_sk) ) @ #vk.19
-4: !KU( pk(~dh_sk) ) @ #vk.20
-5: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
-6: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
-7: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
-8: !KU( pk(~kem) ) @ #vk.21
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-8
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
-1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
 2: !KU( ~ss_dh ) @ #vk.22
 3: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
 4: !KU( pk(~eph_sk) ) @ #vk.19
@@ -6357,6 +6329,30 @@ maude tool: 'maude'
 9
 7
 8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, ~kemMC,         sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA), ~eph_sk, pk(~eph_sk),         ~dh_sk, pk(~dh_sk), pk(~kem), ~ss_ltSAT, aenc(~ss_ltSAT, pk(~kem))) ▶₀ #i
+1: !Pk( 'CA', pk(~skCA) ) ▶₁ #i
+2: !KU( sign(<'cert', $MC.1, pk(~kemMC)>, ~skCA) ) @ #vk.18
+3: !KU( pk(~eph_sk) ) @ #vk.19
+4: !KU( pk(~dh_sk) ) @ #vk.20
+5: !KU( sign(<'cert', $SAT, pk(~kem)>, ~skCA) ) @ #vk.12
+6: !KU( aenc(~ss_eph, pk(~eph_sk)) ) @ #vk.13
+7: !KU( aenc(~ss_ltMC, pk(~kemMC)) ) @ #vk.14
+8: !KU( pk(~kem) ) @ #vk.21
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+8
+6
+7
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -6431,20 +6427,18 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
 1: !Pk( 'CA', pk(x) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~skCA) ) @ #vk.26
-4: splitEqs(0)
-5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
-6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
+2: !KU( ~skCA ) @ #vk.23
+3: splitEqs(0)
+4: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
+5: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
-5
-1
-2
 4
+1
 3
-6
+2
+5
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -6453,86 +6447,6 @@ maude tool: 'maude'
 1: !Pk( 'CA', pk(x) ) ▶₁ #i
 2: splitEqs(1)
 3: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~skCA) ) @ #vk.26
-4: splitEqs(0)
-5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
-6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-5
-1
-2
-4
-3
-6
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
-1: !Pk( 'CA', pk(x) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.26
-4: splitEqs(0)
-5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
-6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-5
-1
-2
-4
-3
-6
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
-1: !Pk( 'CA', pk(x) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.26
-4: splitEqs(0)
-5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
-6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-5
-1
-2
-4
-3
-6
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
-1: !Pk( 'CA', pk(x) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~skCA) ) @ #vk.26
-4: splitEqs(0)
-5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
-6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-5
-1
-2
-4
-3
-6
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
-1: !Pk( 'CA', pk(x) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.26
 4: splitEqs(0)
 5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
 6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
@@ -6569,34 +6483,100 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
 1: !Pk( 'CA', pk(x) ) ▶₁ #i
-2: splitEqs(0)
-3: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
-4: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.26
+4: splitEqs(0)
+5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
+6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
-3
+5
 1
 2
 4
+3
+6
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
 1: !Pk( 'CA', pk(x) ) ▶₁ #i
-2: !KU( ~skCA ) @ #vk.23
-3: splitEqs(0)
-4: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
-5: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.26
+4: splitEqs(0)
+5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
+6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
-4
-1
-3
-2
 5
+1
+2
+4
+3
+6
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
+1: !Pk( 'CA', pk(x) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.26
+4: splitEqs(0)
+5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
+6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+5
+1
+2
+4
+3
+6
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
+1: !Pk( 'CA', pk(x) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~skCA) ) @ #vk.26
+4: splitEqs(0)
+5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
+6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+5
+1
+2
+4
+3
+6
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
+1: !Pk( 'CA', pk(x) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~skCA) ) @ #vk.26
+4: splitEqs(0)
+5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
+6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+5
+1
+2
+4
+3
+6
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -6635,50 +6615,6 @@ maude tool: 'maude'
 1
 2
 4
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
-1: !Pk( 'CA', pk(x) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.26
-4: splitEqs(0)
-5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
-6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
-7: !KU( pk(x.1) ) @ #vk.30
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-5
-1
-2
-4
-3
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
-1: !Pk( 'CA', pk(x) ) ▶₁ #i
-2: splitEqs(1)
-3: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~skCA) ) @ #vk.26
-4: splitEqs(0)
-5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
-6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
-7: !KU( pk(x.1) ) @ #vk.30
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-5
-1
-2
-4
-3
-6
-7
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -6723,6 +6659,66 @@ maude tool: 'maude'
 2
 4
 7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
+1: !Pk( 'CA', pk(x) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', $MC.1, pk(~kem.1)>, ~skCA) ) @ #vk.26
+4: splitEqs(0)
+5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
+6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
+7: !KU( pk(x.1) ) @ #vk.30
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+5
+1
+2
+4
+3
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
+1: !Pk( 'CA', pk(x) ) ▶₁ #i
+2: splitEqs(1)
+3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.26
+4: splitEqs(0)
+5: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
+6: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
+7: !KU( pk(x.1) ) @ #vk.30
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+5
+1
+2
+4
+3
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: St_MC_1( $MC, $SAT, ~sid, kemMC, certMC, ~eph_sk, eph_pk, ~dh_sk,         dh_pk, pkSAT, ~ss_ltSAT, c_ltSAT) ▶₀ #i
+1: !Pk( 'CA', pk(x) ) ▶₁ #i
+2: splitEqs(0)
+3: !KU( h(<certMC, sign(<'cert', $SAT, pkSAT>, x), eph_pk, dh_pk,         c_ltSAT, c_eph, c_dh, c_ltMC>)) @ #vk.15
+4: !KU( sign(<'cert', $SAT, pkSAT>, x) ) @ #vk.8
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+3
+1
+2
+4
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -6804,6 +6800,26 @@ maude tool: 'maude'
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: !Pk( 'CA', pk(x) ) ▶₁ #i
+1: !KU( ~skCA ) @ #vk.29
+2: !KU( sign(<'cert', 'CA', pk(~skCA)>, x) ) @ #vk.15
+3: splitEqs(0)
+4: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.30
+5: !KU( pk(~eph_sk) ) @ #vk.32
+6: !KU( pk(~dh_sk) ) @ #vk.34
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+3
+1
+2
+4
+5
+6
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !Pk( 'CA', pk(x) ) ▶₁ #i
 1: !KU( ~kem.1 ) @ #vk.27
 2: !KU( sign(<'cert', $SAT, pk(~kem.1)>, x) ) @ #vk.12
 3: splitEqs(0)
@@ -6825,22 +6841,20 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !Pk( 'CA', pk(x) ) ▶₁ #i
-1: !KU( ~skCA ) @ #vk.29
-2: !KU( sign(<'cert', 'CA', pk(~skCA)>, x) ) @ #vk.15
-3: splitEqs(0)
-4: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.30
-5: !KU( pk(~eph_sk) ) @ #vk.32
-6: !KU( pk(~dh_sk) ) @ #vk.34
+0: !KU( ~skCA ) @ #vk.30
+1: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.17
+2: splitEqs(0)
+3: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.31
+4: !KU( pk(~eph_sk) ) @ #vk.33
+5: !KU( pk(~dh_sk) ) @ #vk.34
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-3
-1
 2
+0
+1
+3
 4
 5
-6
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -6867,12 +6881,14 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~skCA ) @ #vk.30
-1: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.17
-2: splitEqs(0)
-3: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.31
-4: !KU( pk(~eph_sk) ) @ #vk.33
-5: !KU( pk(~dh_sk) ) @ #vk.34
+0: !KU( ~skCA ) @ #vk.31
+1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
+2: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
+3: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
+4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 2
@@ -6881,6 +6897,8 @@ maude tool: 'maude'
 3
 4
 5
+6
+7
 
 >>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
 
@@ -6897,6 +6915,50 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 1
 0
+2
+3
+4
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~skCA ) @ #vk.31
+1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
+2: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
+3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
+4: !KU( aenc(z, pk(~dh_sk)) ) @ #vk.24
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~skCA ) @ #vk.31
+1: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
+2: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
+3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
+4: !KU( aenc(z.1, pk(~dh_sk)) ) @ #vk.24
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
 2
 3
 4
@@ -6930,18 +6992,18 @@ maude tool: 'maude'
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: !KU( ~skCA ) @ #vk.31
-1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
-2: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
-3: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
-4: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
+1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
+2: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
+3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
+4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
 5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
 6: !KU( pk(~eph_sk) ) @ #vk.33
 7: !KU( pk(~dh_sk) ) @ #vk.34
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
 1
+0
+2
 3
 4
 5
@@ -6978,72 +7040,6 @@ maude tool: 'maude'
 2: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
 3: !KU( aenc(z.1, pk(~dh_sk)) ) @ #vk.24
 4: !KU( aenc(z.2, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~skCA ) @ #vk.31
-1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
-2: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
-3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
-4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-1
-0
-2
-3
-4
-5
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~skCA ) @ #vk.31
-1: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
-2: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
-3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
-4: !KU( aenc(z.1, pk(~dh_sk)) ) @ #vk.24
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~skCA ) @ #vk.31
-1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
-2: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
-3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
-4: !KU( aenc(z, pk(~dh_sk)) ) @ #vk.24
 5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
 6: !KU( pk(~eph_sk) ) @ #vk.33
 7: !KU( pk(~dh_sk) ) @ #vk.34
@@ -7170,18 +7166,18 @@ maude tool: 'maude'
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: !KU( ~skCA ) @ #vk.31
-1: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
-2: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
-3: !KU( aenc(z.1, pk(~dh_sk)) ) @ #vk.24
-4: !KU( aenc(z.2, pk(~kem)) ) @ #vk.26
+1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
+2: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
+3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
+4: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
 5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
 6: !KU( pk(~eph_sk) ) @ #vk.33
 7: !KU( pk(~dh_sk) ) @ #vk.34
 8: !KU( pk(~skCA) ) @ #vk.35
 
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
 1
+0
 2
 3
 4
@@ -7206,54 +7202,6 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
 0
 1
-2
-3
-4
-5
-6
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~skCA ) @ #vk.31
-1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
-2: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
-3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
-4: !KU( aenc(z, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-8: !KU( pk(~skCA) ) @ #vk.35
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~skCA ) @ #vk.31
-1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
-2: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
-3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
-4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-8: !KU( pk(~skCA) ) @ #vk.35
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-1
-0
 2
 3
 4
@@ -7314,10 +7262,58 @@ maude tool: 'maude'
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: !KU( ~skCA ) @ #vk.31
-1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
-2: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
+1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
+2: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
 3: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
-4: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
+4: !KU( aenc(z, pk(~kem)) ) @ #vk.26
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+8: !KU( pk(~skCA) ) @ #vk.35
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~skCA ) @ #vk.31
+1: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
+2: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
+3: !KU( aenc(z.1, pk(~dh_sk)) ) @ #vk.24
+4: !KU( aenc(z.2, pk(~kem)) ) @ #vk.26
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+8: !KU( pk(~skCA) ) @ #vk.35
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~skCA ) @ #vk.31
+1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
+2: !KU( sign(<'cert', 'CA', pk(~skCA)>, ~skCA) ) @ #vk.19
+3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
+4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
 5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
 6: !KU( pk(~eph_sk) ) @ #vk.33
 7: !KU( pk(~dh_sk) ) @ #vk.34
@@ -7518,50 +7514,6 @@ maude tool: 'maude'
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: !KU( ~kem.1 ) @ #vk.31
-1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
-2: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
-3: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
-4: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~kem.1 ) @ #vk.31
-1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
-2: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
-3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
-4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-1
-0
-2
-3
-4
-5
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~kem.1 ) @ #vk.31
 1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
 2: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
 3: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
@@ -7585,75 +7537,31 @@ maude tool: 'maude'
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: !KU( ~kem.1 ) @ #vk.31
 1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
+2: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
+3: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
+4: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~kem.1 ) @ #vk.31
+1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
 2: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
 3: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
 4: !KU( aenc(z, pk(~dh_sk)) ) @ #vk.24
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~kem.1 ) @ #vk.31
-1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
-2: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
-3: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
-4: !KU( aenc(z, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~kem.1 ) @ #vk.31
-1: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
-2: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
-3: !KU( aenc(z.1, pk(~dh_sk)) ) @ #vk.24
-4: !KU( aenc(z.2, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~kem.1 ) @ #vk.31
-1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
-2: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
-3: !KU( aenc(z, pk(~dh_sk)) ) @ #vk.24
-4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
 5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
 6: !KU( pk(~eph_sk) ) @ #vk.33
 7: !KU( pk(~dh_sk) ) @ #vk.34
@@ -7694,10 +7602,98 @@ maude tool: 'maude'
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: !KU( ~kem.1 ) @ #vk.31
+1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
+2: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
+3: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
+4: !KU( aenc(z, pk(~kem)) ) @ #vk.26
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~kem.1 ) @ #vk.31
+1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
+2: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
+3: !KU( aenc(z, pk(~dh_sk)) ) @ #vk.24
+4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~kem.1 ) @ #vk.31
+1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
+2: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
+3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
+4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+1
+0
+2
+3
+4
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~kem.1 ) @ #vk.31
 1: !KU( ~dh_sk ) @ #vk.35
 2: !KU( adec(c_eph, ~eph_sk) ) @ #vk.29
 3: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
 4: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.21
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~kem.1 ) @ #vk.31
+1: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
+2: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
+3: !KU( aenc(z.1, pk(~dh_sk)) ) @ #vk.24
+4: !KU( aenc(z.2, pk(~kem)) ) @ #vk.26
 5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
 6: !KU( pk(~eph_sk) ) @ #vk.33
 7: !KU( pk(~dh_sk) ) @ #vk.34
@@ -7826,126 +7822,6 @@ maude tool: 'maude'
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: !KU( ~kem.1 ) @ #vk.31
-1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
-2: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
-3: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
-4: !KU( aenc(z, pk(~dh_sk)) ) @ #vk.24
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-8: !KU( pk(~kem.1) ) @ #vk.35
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~kem.1 ) @ #vk.31
-1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
-2: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
-3: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
-4: !KU( aenc(z, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-8: !KU( pk(~kem.1) ) @ #vk.35
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-2
-0
-1
-3
-4
-5
-6
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~kem.1 ) @ #vk.31
-1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
-2: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
-3: !KU( aenc(z, pk(~dh_sk)) ) @ #vk.24
-4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-8: !KU( pk(~kem.1) ) @ #vk.35
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~kem.1 ) @ #vk.31
-1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
-2: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
-3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
-4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-8: !KU( pk(~kem.1) ) @ #vk.35
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-1
-0
-2
-3
-4
-5
-6
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~kem.1 ) @ #vk.31
-1: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
-2: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
-3: !KU( aenc(z.1, pk(~dh_sk)) ) @ #vk.24
-4: !KU( aenc(z.2, pk(~kem)) ) @ #vk.26
-5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
-6: !KU( pk(~eph_sk) ) @ #vk.33
-7: !KU( pk(~dh_sk) ) @ #vk.34
-8: !KU( pk(~kem.1) ) @ #vk.35
-
->>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
-0
-1
-2
-3
-4
-5
-6
-7
-8
-
->>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
-
->>>>>>>>>>>>>>>>>>>>>>>> START INPUT
-0: !KU( ~kem.1 ) @ #vk.31
 1: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
 2: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
 3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
@@ -7994,10 +7870,130 @@ maude tool: 'maude'
 
 >>>>>>>>>>>>>>>>>>>>>>>> START INPUT
 0: !KU( ~kem.1 ) @ #vk.31
+1: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
+2: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
+3: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
+4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+8: !KU( pk(~kem.1) ) @ #vk.35
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+1
+0
+2
+3
+4
+5
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~kem.1 ) @ #vk.31
+1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
+2: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
+3: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
+4: !KU( aenc(z, pk(~dh_sk)) ) @ #vk.24
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+8: !KU( pk(~kem.1) ) @ #vk.35
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~kem.1 ) @ #vk.31
+1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
+2: !KU( adec(c_dh, ~dh_sk) ) @ #vk.29
+3: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
+4: !KU( aenc(z, pk(~kem)) ) @ #vk.26
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+8: !KU( pk(~kem.1) ) @ #vk.35
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+0
+1
+3
+4
+5
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~kem.1 ) @ #vk.31
+1: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
+2: !KU( aenc(z, pk(~eph_sk)) ) @ #vk.22
+3: !KU( aenc(z.1, pk(~dh_sk)) ) @ #vk.24
+4: !KU( aenc(z.2, pk(~kem)) ) @ #vk.26
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+8: !KU( pk(~kem.1) ) @ #vk.35
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~kem.1 ) @ #vk.31
 1: !KU( ~dh_sk ) @ #vk.36
 2: !KU( adec(c_eph, ~eph_sk) ) @ #vk.29
 3: !KU( adec(c_ltMC, ~kem) ) @ #vk.30
 4: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.21
+5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
+6: !KU( pk(~eph_sk) ) @ #vk.33
+7: !KU( pk(~dh_sk) ) @ #vk.34
+8: !KU( pk(~kem.1) ) @ #vk.35
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( ~kem.1 ) @ #vk.31
+1: !KU( adec(c_eph, ~eph_sk) ) @ #vk.28
+2: !KU( sign(<'cert', $SAT, pk(~kem.1)>, ~skCA) ) @ #vk.19
+3: !KU( aenc(z, pk(~dh_sk)) ) @ #vk.24
+4: !KU( aenc(z.1, pk(~kem)) ) @ #vk.26
 5: !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.32
 6: !KU( pk(~eph_sk) ) @ #vk.33
 7: !KU( pk(~dh_sk) ) @ #vk.34
@@ -8993,7 +8989,7 @@ next
   qed
 qed
 
-lemma mutual_authentication_MC [heuristic=O "oracle"]:
+lemma mutual_authentication_MC [heuristic=O "oracle_e2eqss.py"]:
   all-traces
   "∀ MC SAT th #i.
     (Commit( MC, SAT, <'MCtoSAT', th> ) @ #i) ⇒
@@ -10770,16 +10766,7 @@ next
   qed
 qed
 
-/*
-WARNING: the following wellformedness checks failed!
-
-Derivation Checks
-=================
-
-  Derivation checks timed out.
-  Use --derivcheck-timeout=INT to configure timeout.
-  Set to 0 to deactivate for no timeout.
-*/
+/* All wellformedness checks were successful. */
 
 /*
 Generated from:
@@ -10794,12 +10781,9 @@ end
 ==============================================================================
 summary of summaries:
 
-analyzed: e2eqss.spthy
+analyzed: models/e2eqss.spthy
 
-  processing time: 161.42s
-  
-  WARNING: 1 wellformedness check failed!
-           The analysis results might be wrong!
+  processing time: 61.33s
   
   executable (exists-trace): verified (15 steps)
   key_secrecy (all-traces): verified (49 steps)

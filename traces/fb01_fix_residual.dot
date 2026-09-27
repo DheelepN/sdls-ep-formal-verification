@@ -1,0 +1,64 @@
+digraph "trace_triple_kem_space_4pass_SL2-AS0-CL0-A1-C1-NB_residual_asymmetry_reachable-SAT_1-SAT_1-split_case_2-MC_2-MC_1-SAT_1" {
+nodesep="0.3";
+ranksep="0.3";
+node[fontsize="8",fontname="Helvetica",width="0.3",height="0.2"];
+edge[fontsize="8",fontname="Helvetica"];
+n6[shape="record",label="{{<n0> St_SAT_1( $SAT, $MC, ~sidS, KD1, H1 )|<n1> Contact( $SAT, ~sidS )|<n2> In( \<'M3', SE2\> )}|{<n3> #i : SAT_2[Eq( SE2, SE2 ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KeyActiveSat( $SAT, $MC, KD1 ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Secret( KD1 ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Honest( $SAT ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Honest( $MC )]\l}|{<n4> St_SAT_2( $SAT, $MC, ~sidS, KD1, H1 )|<n5> Out( \<'M4', senc(\<'ack', H1\>, KD1)\> )}}",fillcolor="#d5d897",style="filled",fontcolor="black",role="Undefined"];
+n7[label="#vf : isend",shape="ellipse"];
+n8[label="#vk : coerce[!KU( SE2 )]",shape="ellipse"];
+n9[label="#vl : irecv",shape="ellipse"];
+n21[shape="record",label="{{<n10> !Ltk( $SAT, ~ltk )|<n11> !Pk( $MC, PK1 )|<n12> !Psk( $MC, $SAT,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~psk\l)\l|<n13> In( \<'M1', SE3\> )|<n14> Fr( ~ss_e )|<n15> Fr( ~ss_mc )|<n16> Fr( ~sidS )}|{<n17> #vr : SAT_1[Running( $SAT, $MC, \<'SATtoMC', KD1, H1\> ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Honest( $SAT ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Honest( $MC )]\l}|{<n18> St_SAT_1( $SAT, $MC, ~sidS, KD1, H1 )|<n19> Contact( $SAT, ~sidS )|<n20> Out( \<'M2', SE1\> )}}",fillcolor="#cad998",style="filled",fontcolor="black",role="Undefined"];
+n22[label="#vf.1 : isend",shape="ellipse"];
+n23[label="#vk.1 : coerce[!KU( SE3 )]",shape="ellipse"];
+n24[label="#vl.1 : irecv",shape="ellipse"];
+n30[shape="record",label="{{<n25> Fr( ~ltk )}|{<n26> #vr.1 : Register_ltk[OnlyOnce( $SAT )]}|{<n27> !Ltk( $SAT, ~ltk )|<n28> !Pk( $SAT, pk(~ltk) )|<n29> Out( pk(~ltk) )}}",fillcolor="#b4db99",style="filled",fontcolor="black",role="Undefined"];
+n31[label="#vk.2 : coerce[!KU( SE1 )]",shape="ellipse"];
+n32[label="#vl.2 : irecv",shape="ellipse"];
+n38[shape="record",label="{{<n33> Fr( ~ltk.1 )}|{<n34> #vr.2 : Register_ltk[OnlyOnce( $MC )]}|{<n35> !Ltk( $MC, ~ltk.1 )|<n36> !Pk( $MC, PK1 )|<n37> Out( PK1 )}}",fillcolor="#b4db99",style="filled",fontcolor="black",role="Undefined"];
+n42[shape="record",label="{{<n39> Fr( ~psk )}|{<n40> #vr.3 : Register_psk[PskInit( $MC, $SAT )]}|{<n41> !Psk( $MC, $SAT, ~psk )}}",fillcolor="#afdc9a",style="filled",fontcolor="black",role="Undefined"];
+n48[shape="record",label="{{<n43> St_MC_1( $MC, $SAT, ~sid, ~ltk.1, ~psk, ~ss_sat, ~ske, AE1,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pk(~ske)\l)\l|<n44> In( \<'M2', SE1\> )}|{<n45> #vr.4 : MC_2[Eq( SE4, SE4 ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Commit( $MC, $SAT, \<'MCtoSAT', KD1, H1\> ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Secret( KD1 ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Honest( $MC ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Honest( $SAT )]\l}|{<n46> St_MC_2( $MC, $SAT, ~sid, KD1, H1 )|<n47> Out( \<'M3', SE2\> )}}",fillcolor="#a9dc9a",style="filled",fontcolor="black",role="Undefined"];
+n49[label="#vr.5 : d_0_snd",shape="ellipse"];
+n59[shape="record",label="{{<n50> !Ltk( $MC, ~ltk.1 )|<n51> !Pk( $SAT, pk(~ltk)\l)\l|<n52> !Psk( $MC, $SAT, ~psk\l)\l|<n53> Fr( ~ss_sat )|<n54> Fr( ~ske )|<n55> Fr( ~sid )}|{<n56> #vr.6 : MC_1[StartMC( $MC, $SAT, ~sid )]}|{<n57> St_MC_1( $MC, $SAT, ~sid, ~ltk.1, ~psk, ~ss_sat, ~ske, AE1,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pk(~ske)\l)\l|<n58> Out( \<'M1', SE3\> )}}",fillcolor="#a4dd9b",style="filled",fontcolor="black",role="Undefined"];
+n60[label="#vf.8 : isend",shape="ellipse"];
+n61[label="#vr.8 : d_0_snd",shape="ellipse"];
+n7 -> n6:n2[color="gray30"];
+n9 -> n49[color="orangered2"];
+n21:n18 -> n6:n0[style="bold",weight="10.0"];
+n21:n19 -> n6:n1[style="bold",weight="10.0"];
+n21:n20 -> n32[color="gray30"];
+n22 -> n21:n13[color="gray30"];
+n24 -> n23[color="orangered2"];
+n30:n27 -> n21:n10[style="bold",weight="10.0",color="gray50"];
+n30:n28 -> n59:n51[style="bold",weight="10.0",color="gray50"];
+n32 -> n61[color="orangered2"];
+n38:n35 -> n59:n50[style="bold",weight="10.0",color="gray50"];
+n38:n36 -> n21:n11[style="bold",weight="10.0",color="gray50"];
+n42:n41 -> n21:n12[style="bold",weight="10.0",color="gray50"];
+n42:n41 -> n59:n52[style="bold",weight="10.0",color="gray50"];
+n48:n47 -> n9[color="gray30"];
+n49 -> n8[color="orangered2"];
+n59:n57 -> n48:n43[style="bold",weight="10.0"];
+n59:n58 -> n24[color="gray30"];
+n60 -> n48:n44[color="gray30"];
+n61 -> n31[color="orangered2"];
+n8 -> n7[color="red",style="dashed"];
+n9 -> n7[color="red",style="dashed"];
+n23 -> n22[color="red",style="dashed"];
+n24 -> n22[color="red",style="dashed"];
+n31 -> n60[color="red",style="dashed"];
+n32 -> n60[color="red",style="dashed"];
+{
+rank="sink";
+n62[shape="plain",label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="3" CELLPADDING="1"><TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">AE1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">aenc(~ss_sat, pk(~ltk))</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">PK1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">pk(~ltk.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">H1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">h(&lt;AE1, pk(~ske), aenc(~ss_e, pk(~ske)), aenc(~ss_mc, PK1)&gt;)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">KD1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">kdf(&lt;~psk, ~ss_sat, ~ss_e, ~ss_mc, H1&gt;)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE2</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">senc(&lt;'mc', H1&gt;, KD1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE3</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">senc(&lt;'pl1', AE1, pk(~ske)&gt;, ~psk)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE4</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">senc(&lt;'sc', H1&gt;, KD1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">senc(&lt;'pl2', aenc(~ss_e, pk(~ske)), aenc(~ss_mc, PK1), SE4&gt;, ~psk)</TD></TR></TABLE>>];
+
+}
+n6:n3 -> n62[style="invis"];
+
+}

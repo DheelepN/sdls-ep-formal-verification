@@ -3,8 +3,6 @@ maude tool: 'maude'
  checking installation: OK.
 [Theory dual_kem] Theory loaded
 [Theory dual_kem] Theory translated
-[Theory dual_kem] Derivation checks started
-[Theory dual_kem] Derivation checks ended
 [Theory dual_kem] Theory closed
 [Saturating Sources] Step 1 (Max 5)
 [Saturating Sources] Done
@@ -105,6 +103,11 @@ rule (modulo E) MC_2:
       senc(<'sc', h(<pke, c_e, c_mc>)>,
            kdf(<psk, adec(c_e, ~ske), adec(c_mc, ltkMC), h(<pke, c_e, c_mc>)>))
   ),
+  Running( $MC, $SAT,
+           <'MCtoSAT', 
+            kdf(<psk, adec(c_e, ~ske), adec(c_mc, ltkMC), h(<pke, c_e, c_mc>)>), 
+            h(<pke, c_e, c_mc>)>
+  ),
   Commit( $MC, $SAT,
           <'MCtoSAT', 
            kdf(<psk, adec(c_e, ~ske), adec(c_mc, ltkMC), h(<pke, c_e, c_mc>)>), 
@@ -142,6 +145,9 @@ rule (modulo E) MC_2:
     Eq( conf_s,
         senc(<'sc', h(<pke, c_e, c_mc>)>,
              kdf(<psk, z, z.1, h(<pke, c_e, c_mc>)>))
+    ),
+    Running( $MC, $SAT,
+             <'MCtoSAT', kdf(<psk, z, z.1, h(<pke, c_e, c_mc>)>), h(<pke, c_e, c_mc>)>
     ),
     Commit( $MC, $SAT,
             <'MCtoSAT', kdf(<psk, z, z.1, h(<pke, c_e, c_mc>)>), h(<pke, c_e, c_mc>)>
@@ -264,24 +270,49 @@ lemma initiator_auth_holds:
   all-traces
   "∀ SAT MC k th #i.
     (Commit( SAT, MC, <'SATtoMC', k, th> ) @ #i) ⇒
-    (((∃ #j. Running( SAT, MC, <'SATtoMC', k, th> ) @ #j) ∨
-      (∃ A #r. ((LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i)) ∧ (#r < #i))) ∨
-     (∃ M S #p. PskReveal( M, S ) @ #p))"
+    ((∃ #j. (Running( MC, SAT, <'MCtoSAT', k, th> ) @ #j) ∧ (#j < #i)) ∨
+     (∃ A #r. ((LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i)) ∧ (#r < #i)))"
 /*
 guarded formula characterizing all counter-examples:
 "∃ SAT MC k th #i.
   (Commit( SAT, MC, <'SATtoMC', k, th> ) @ #i)
  ∧
-  (∀ #j. (Running( SAT, MC, <'SATtoMC', k, th> ) @ #j) ⇒ ⊥) ∧
-  (∀ A #r. (LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i) ⇒ ¬(#r < #i)) ∧
-  (∀ M S #p. (PskReveal( M, S ) @ #p) ⇒ ⊥)"
+  (∀ #j. (Running( MC, SAT, <'MCtoSAT', k, th> ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ A #r. (LtkReveal( A ) @ #r) ∧ (Honest( A ) @ #i) ⇒ ¬(#r < #i))"
 */
 simplify
 solve( Commit( SAT, MC, <'SATtoMC', k, th> ) @ #i )
   case SAT_2
   solve( St_SAT_1( $SAT, $MC, ~sidS, k, th, pke, c_e, c_mc ) ▶₀ #i )
     case SAT_1
-    by contradiction /* from formulas */
+    solve( !KU( senc(<'mc', 
+                      h(<pke, aenc(~ss_e, pke), aenc(~ss_mc, pk(~ltk))>)>,
+                     kdf(<~psk, ~ss_e, ~ss_mc, 
+                          h(<pke, aenc(~ss_e, pke), aenc(~ss_mc, pk(~ltk))>)>))
+           ) @ #vk.2 )
+      case MC_2
+      by contradiction /* from formulas */
+    next
+      case c_senc
+      solve( !KU( kdf(<~psk, ~ss_e, ~ss_mc, 
+                       h(<pke, aenc(~ss_e, pke), aenc(~ss_mc, pk(~ltk))>)>)
+             ) @ #vk.7 )
+        case c_kdf
+        solve( !KU( ~psk ) @ #vk.12 )
+          case Reveal_psk
+          solve( !KU( ~ss_e ) @ #vk.14 )
+            case SAT_1
+            solve( !KU( ~ss_mc ) @ #vk.15 )
+              case SAT_1
+              solve( !KU( ~ltk ) @ #vk.17 )
+                case Reveal_ltk
+                by contradiction /* from formulas */
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
   qed
 qed
 
@@ -468,12 +499,12 @@ end
 ==============================================================================
 summary of summaries:
 
-analyzed: dual_kem.spthy
+analyzed: models/dual_kem.spthy
 
-  processing time: 9.65s
+  processing time: 2.00s
   
   executable (exists-trace): verified (7 steps)
-  initiator_auth_holds (all-traces): verified (4 steps)
+  initiator_auth_holds (all-traces): verified (11 steps)
   responder_auth_expected_fail (all-traces): falsified - found trace (14 steps)
   key_secrecy_psk_intact (all-traces): verified (10 steps)
   post_compromise_security_expected_fail (all-traces): falsified - found trace (15 steps)

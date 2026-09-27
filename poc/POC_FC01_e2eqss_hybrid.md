@@ -16,7 +16,7 @@ E2EQSS advertises a hybrid of ML-KEM and ECDH so that the session survives the c
 To confirm the attack constructively, [`models/e2eqss_fc01.spthy`](../models/e2eqss_fc01.spthy) is the full E2EQSS handshake trimmed to the rules the attack needs, with **the ECDH-leg-reveal rule and the long-term-key-reveal rule deliberately removed.** Any trace found in this model therefore *structurally* has the ECDH leg intact and no long-term key compromised — so a witnessing trace proves that breaking ML-KEM alone (`KemReveal`) suffices.
 
 ```bash
-# from Project_B/models
+# from models/  (Tamarin 1.12.0, Maude 3.1)
 tamarin-prover --auto-sources --prove=fc01_kem_broken_dh_survives_attack \
   --output-dot=../traces/fc01_attack.dot e2eqss_fc01.spthy
 ```

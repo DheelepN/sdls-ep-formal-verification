@@ -3,10 +3,255 @@ maude tool: 'maude'
  checking installation: OK.
 [Theory e2eqss_fc01] Theory loaded
 [Theory e2eqss_fc01] Theory translated
-[Theory e2eqss_fc01] Derivation checks started
-[Theory e2eqss_fc01] Derivation checks ended
 [Theory e2eqss_fc01] Theory closed
 [Saturating Sources] Step 1 (Max 5)
 [Saturating Sources] Done
-[Saturating Sources] Step 1 (Max 5)
-[Saturating Sources] Done
+theory e2eqss_fc01
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: adec/2, aenc/2, fst/1, h/1, kdf/1, pair/2, pk/1, sdec/2,
+           senc/2, sign/2, snd/1, true/0, verify/3
+equations:
+    adec(aenc(x.1, pk(x.2)), x.2) = x.1,
+    fst(<x.1, x.2>) = x.1,
+    sdec(senc(x.1, x.2), x.2) = x.1,
+    snd(<x.1, x.2>) = x.2,
+    verify(sign(x.1, x.2), x.1, pk(x.2)) = true
+
+rule (modulo E) Register_CA:
+   [ Fr( ~skCA ) ]
+  --[ OnlyOnce( 'CA' ) ]->
+   [ !CA( ~skCA ), !Pk( 'CA', pk(~skCA) ), Out( pk(~skCA) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Register_ltk:
+   [ !CA( skCA ), Fr( ~kem ) ]
+  --[ OnlyOnce( $A ) ]->
+   [
+   !Ltk( $A, ~kem ), !Pk( $A, pk(~kem) ),
+   !Cert( $A, sign(<'cert', $A, pk(~kem)>, skCA) ), Out( pk(~kem) )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_kem_secret:
+   [ !KemSecret( s ) ] --[ KemReveal( s ) ]-> [ Out( s ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) MC_1:
+   [ !Cert( $MC, certMC ), Fr( ~eph_sk ), Fr( ~dh_sk ) ]
+  --[ StartMC( $MC ) ]->
+   [ Out( <'M1', certMC, pk(~eph_sk), pk(~dh_sk)> ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) SAT_1:
+   [
+   !Cert( $SAT, certSAT ), !Pk( $MC, pkMC ), !Pk( 'CA', pkCA ),
+   In( <'M1', certMC, eph_pk, dh_pk> ), Fr( ~ss_eph ), Fr( ~ss_dh ),
+   Fr( ~ss_ltMC ), Fr( ~sidS )
+   ]
+  --[
+  Eq( verify(certMC, <'cert', $MC, pkMC>, pkCA), true ), Honest( $SAT ),
+  Honest( $MC )
+  ]->
+   [
+   St_SAT_1( $SAT, $MC, ~sidS,
+             kdf(<~ss_eph, ~ss_dh, ~ss_ltMC, 
+                  h(<certMC, eph_pk, dh_pk, aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), 
+                     aenc(~ss_ltMC, pkMC)>)
+                 >),
+             h(<certMC, eph_pk, dh_pk, aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), 
+                aenc(~ss_ltMC, pkMC)>)
+   ),
+   !KemSecret( ~ss_eph ), !KemSecret( ~ss_ltMC ),
+   Out( <'M2', aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), 
+         aenc(~ss_ltMC, pkMC), 
+         senc(<'sc', 
+               h(<certMC, eph_pk, dh_pk, aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), 
+                  aenc(~ss_ltMC, pkMC)>)
+              >,
+              kdf(<~ss_eph, ~ss_dh, ~ss_ltMC, 
+                   h(<certMC, eph_pk, dh_pk, aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), 
+                      aenc(~ss_ltMC, pkMC)>)
+                  >))
+        >
+   )
+   ]
+
+  /*
+  rule (modulo AC) SAT_1:
+     [
+     !Cert( $SAT, certSAT ), !Pk( $MC, pkMC ), !Pk( 'CA', pkCA ),
+     In( <'M1', certMC, eph_pk, dh_pk> ), Fr( ~ss_eph ), Fr( ~ss_dh ),
+     Fr( ~ss_ltMC ), Fr( ~sidS )
+     ]
+    --[ Eq( z, true ), Honest( $SAT ), Honest( $MC ) ]->
+     [
+     St_SAT_1( $SAT, $MC, ~sidS,
+               kdf(<~ss_eph, ~ss_dh, ~ss_ltMC, 
+                    h(<certMC, eph_pk, dh_pk, aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), 
+                       aenc(~ss_ltMC, pkMC)>)
+                   >),
+               h(<certMC, eph_pk, dh_pk, aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), 
+                  aenc(~ss_ltMC, pkMC)>)
+     ),
+     !KemSecret( ~ss_eph ), !KemSecret( ~ss_ltMC ),
+     Out( <'M2', aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), 
+           aenc(~ss_ltMC, pkMC), 
+           senc(<'sc', 
+                 h(<certMC, eph_pk, dh_pk, aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), 
+                    aenc(~ss_ltMC, pkMC)>)
+                >,
+                kdf(<~ss_eph, ~ss_dh, ~ss_ltMC, 
+                     h(<certMC, eph_pk, dh_pk, aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), 
+                        aenc(~ss_ltMC, pkMC)>)
+                    >))
+          >
+     )
+     ]
+    variants (modulo AC)
+    1. $MC   = $MC.30
+       certMC
+             = certMC.36
+       pkCA  = pkCA.40
+       pkMC  = pkMC.41
+       z     = verify(certMC.36, <'cert', $MC.30, pkMC.41>, pkCA.40)
+    
+    2. $MC   = $MC.77
+       certMC
+             = sign(<'cert', $MC.77, pkMC.88>, x.152)
+       pkCA  = pk(x.152)
+       pkMC  = pkMC.88
+       z     = true
+  */
+
+rule (modulo E) SAT_2:
+   [ St_SAT_1( $SAT, $MC, ~sidS, MS, th ), In( <'M3', conf_m> ) ]
+  --[
+  Eq( conf_m, senc(<'mc', th>, MS) ), AcceptSat( $SAT, $MC, MS ),
+  Secret( MS ), Honest( $SAT ), Honest( $MC )
+  ]->
+   [ ]
+
+  /* has exactly the trivial AC variant */
+
+restriction Equality:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  */
+
+restriction OnlyOnce:
+  "∀ A #i #j. ((OnlyOnce( A ) @ #i) ∧ (OnlyOnce( A ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ A #i #j. ((OnlyOnce( A ) @ #i) ∧ (OnlyOnce( A ) @ #j)) ⇒ (#i = #j)"
+  */
+
+lemma fc01_kem_broken_dh_survives_attack:
+  exists-trace
+  "∃ SAT MC MS s #i #j #k.
+    (((AcceptSat( SAT, MC, MS ) @ #i) ∧ (Secret( MS ) @ #i)) ∧
+     (K( MS ) @ #j)) ∧
+    (KemReveal( s ) @ #k)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ SAT MC MS s #i #j #k.
+  (AcceptSat( SAT, MC, MS ) @ #i) ∧
+  (Secret( MS ) @ #i) ∧
+  (K( MS ) @ #j) ∧
+  (KemReveal( s ) @ #k)"
+*/
+simplify
+solve( St_SAT_1( $SAT, $MC, ~sidS, MS, th ) ▶₀ #i )
+  case SAT_1_case_2
+  solve( !KemSecret( s ) ▶₀ #k )
+    case SAT_1_case_2
+    solve( !KU( kdf(<~ss_eph, ~ss_dh, ~ss_ltMC, 
+                     h(<sign(<'cert', $MC, pk(~kem)>, ~skCA), eph_pk, dh_pk, 
+                        aenc(~ss_eph, eph_pk), aenc(~ss_dh, dh_pk), aenc(~ss_ltMC, pk(~kem))>)
+                    >)
+           ) @ #vk.3 )
+      case c_kdf
+      solve( !KU( ~ss_eph ) @ #vk.18 )
+        case Reveal_kem_secret
+        solve( !KU( ~ss_dh ) @ #vk.20 )
+          case SAT_1
+          solve( !KU( ~ss_ltMC ) @ #vk.22 )
+            case Reveal_kem_secret
+            solve( !KU( h(<sign(<'cert', $MC, pk(~kem)>, ~skCA), eph_pk, pk(x), 
+                           aenc(~ss_eph, eph_pk), aenc(~ss_dh, pk(x)), aenc(~ss_ltMC, pk(~kem))>)
+                   ) @ #vk.23 )
+              case c_h
+              solve( !KU( sign(<'cert', $MC, pk(~kem)>, ~skCA) ) @ #vk.16 )
+                case MC_1
+                solve( !KU( sign(<'cert', $MC.1, pk(~kem.3)>, ~skCA) ) @ #vk.25 )
+                  case MC_1
+                  solve( !KU( senc(<'mc', 
+                                    h(<sign(<'cert', $MC, pk(~kem)>, ~skCA), eph_pk, pk(x), 
+                                       aenc(~ss_eph, eph_pk), aenc(~ss_dh, pk(x)), aenc(~ss_ltMC, pk(~kem))>)
+                                   >,
+                                   kdf(<~ss_eph, ~ss_dh, ~ss_ltMC, 
+                                        h(<sign(<'cert', $MC, pk(~kem)>, ~skCA), eph_pk, pk(x), 
+                                           aenc(~ss_eph, eph_pk), aenc(~ss_dh, pk(x)), 
+                                           aenc(~ss_ltMC, pk(~kem))>)
+                                       >))
+                         ) @ #vk.15 )
+                    case c_senc
+                    solve( !KU( pk(x) ) @ #vk.27 )
+                      case c_pk
+                      solve( !KU( aenc(~ss_eph, eph_pk) ) @ #vk.32 )
+                        case SAT_1
+                        solve( !KU( aenc(~ss_dh, pk(x)) ) @ #vk.20 )
+                          case SAT_1
+                          solve( !KU( aenc(~ss_ltMC, pk(~kem)) ) @ #vk.33 )
+                            case SAT_1
+                            SOLVED // trace found
+                          qed
+                        qed
+                      qed
+                    qed
+                  qed
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.1
+Git revision: 82780bbaf3328a45f624ddb41e51bf75425f851c (with uncommited changes), branch: master
+Compiled at: 2026-03-07 14:22:39.174278293 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: models/e2eqss_fc01.spthy
+
+  processing time: 12.11s
+  
+  fc01_kem_broken_dh_survives_attack (exists-trace): verified (16 steps)
+
+==============================================================================
