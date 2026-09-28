@@ -143,7 +143,96 @@ The model keeps §4.2's pass window and adds: MC does not activate on sending M3
 
 MC only ever sends under the old key or, after activation, under k. By `mc_activation_safe` SAT already holds k by then; by `sat_retirement_safe` SAT still holds the old key for as long as MC may be using it. So SAT always holds the key MC is using, whichever message is lost. Both safety lemmas were mutation-checked: restoring the three-message activation falsifies `mc_activation_safe`, and letting SAT retire on its own M4 falsifies `sat_retirement_safe`.
 
-Left open, and needed in a specification: how SAT discards a pending new key that MC never activated, and what happens if a second rekey starts while SAT still holds both keys.
+Two edge cases are left open for a specification; they are set out as directives in §4.7.
+
+### 4.6 Operational edge-case matrix
+
+The following table enumerates the single-message-loss cases on the space channel
+exhaustively. Cases 2 and 3 are established directly by the named lemmas of §4.5;
+Cases 1, 4 and 5 are corollaries of the same activation ordering, or hold by
+construction, as each row states. The distinction is deliberate: the model proves the
+activation ordering (`mc_activation_safe`, `sat_retirement_safe`) and the reachability
+of the residual state (`residual_asymmetry_reachable`); the remaining cases follow from
+that ordering rather than being separately proved traces.
+
+#### Case 1 — M3 lost (pass window closes, RF dropout, adversary drop)
+
+MC sent M3 but SAT never received it.
+
+- **3-message protocol (§4.3):** Fatal. MC activated the new key on sending M3; SAT is
+  still on the old key. All subsequent telecommand frames are rejected, and the proposal
+  defines no recovery mechanism.
+- **4-message protocol (§4.5):** Safe. MC does not activate on sending M3 (rule `MC_3`
+  requires a valid M4), and SAT does not activate without M3 (rule `SAT_2` requires it).
+  Both sides remain on the old key; telecommand capability is preserved. This is a
+  corollary of `mc_activation_safe`: with no `KeyActiveSat`, MC never reaches
+  `KeyActiveMC`. Re-initiating the rekey on a later pass is an operational action outside
+  the model — the model contains no retry rule; `Pass_ends` simply ends the session.
+
+#### Case 2 — M4 lost (the two-generals residue)
+
+SAT received M3, activated k, retained the old key, and sent M4 (ACK). M4 was dropped.
+
+- **State:** SAT holds k (active) *and* the old key (retained). MC never received the
+  ACK, so MC remains on the old key.
+- **Backing:** this is the residual state shown reachable with no compromise by
+  `residual_asymmetry_reachable` (verified exists-trace), and the expected falsification
+  of `sat_activation_implies_mc_activation`; exported to `traces/fb01_fix_residual.dot`.
+- **Why it is safe:** MC's next telecommand frame is sent under the old key. By
+  `sat_retirement_safe`, SAT retires the old key only after MC has activated k, which has
+  not happened here, so SAT still holds the old key and can process MC's traffic. Safety
+  in this case rests on that ordering argument, as in §4.5 — the model verifies the
+  retirement ordering, not old-key frame acceptance directly.
+
+#### Case 3 — Both M3 and M4 arrive (nominal success)
+
+- MC activates k on receiving M4 (`mc_activation_safe` verified — MC activates only after
+  SAT).
+- MC sends the first operational frame under k.
+- SAT receives it, verifies it under k, and retires the old key (`sat_retirement_safe`
+  verified — old key retired only after MC activated k).
+- The `executable` lemma witnesses the full sequence (`KeyActiveSat`, `KeyActiveMC`,
+  `RetireOldSat`) with no compromise. Clean, fully synchronized transition.
+
+#### Case 4 — M1 or M2 lost
+
+The rekey handshake never reaches key confirmation, so neither side derives or activates
+k. Both remain on the old key. Safe by construction: with no `KeyActiveSat` or
+`KeyActiveMC` event, the activation lemmas hold vacuously and no state transition occurs.
+This is indistinguishable from "no rekey attempted."
+
+#### Case 5 — F lost (the first frame under k)
+
+MC received a valid M4, activated k, and sent the first frame F under k; F was dropped.
+
+- **State:** MC is on k. SAT holds both keys — it has not retired the old key, because
+  `SAT_retire` requires F.
+- **Why it is safe:** both sides hold k, so MC continues under k and SAT, holding k,
+  processes it; SAT simply retains the old key longer than the nominal case until an
+  authenticated frame under k arrives. No dead state. This is the benign counterpart of
+  Directive 1 (§4.7): an active k alongside an un-retired old key, resolved by MC's next
+  frame.
+
+### 4.7 Open specification directives
+
+Two edge cases require normative text in a Blue Book revision. The Tamarin model in §4.5
+does not address them because they concern policy timeouts and session management, not
+cryptographic safety properties; both are named as out of scope in the model header.
+
+**Directive 1 — Pending key expiry.** If M4 is lost and ground never sends traffic under
+k (for example, no further passes are scheduled, or the mission enters safe mode), SAT
+holds k indefinitely in a pending slot alongside the old key. The specification must
+define either (a) a normative timeout after which SAT discards the uncommitted key k and
+reverts to single-key state, or (b) a ground-initiated "abort pending rekey" directive
+that explicitly flushes k.
+
+**Directive 2 — Rekey session concurrency.** If a second rekey is initiated (a new M1)
+while SAT still holds both the old key and an unconfirmed k from a previous session, the
+specification must mandate what happens to k. The simplest safe rule is that a new M1
+automatically invalidates any uncommitted pending key, preventing key-table exhaustion
+on resource-constrained spacecraft memory. Without such a rule, repeated failed rekeys
+could fill SAT's key storage.
+
 
 ---
 
@@ -190,5 +279,5 @@ Mitigation: authenticate the transcript, or at least the ephemeral public keys, 
 
 - Triple-KEM/Dual-KEM findings (FA-01, FA-02, FB-01): these are analyses of published proposals, not of deployed operational software. Courtesy notice sent to the proposal authors, who replied and confirmed FB-01. CCSDS Security Working Group notice in progress. The four-message model (§4.5) is offered as a template for checking any revised specification.
 - E2EQSS (FC-01): courtesy notice sent to the author, who replied. FC-01 rests on the E2EQSS signatures covering only static keys; that reading of the design should be confirmed with the authors before it is cited.
-- Publish all models and captured proofs as a Zenodo artifact with a DOI; the Tamarin theory files are as much the contribution as the report.
+- Models and captured proofs are published as a Zenodo artifact (DOI 10.5281/zenodo.22907127); the Tamarin theory files are as much the contribution as the report.
 - Venue: SpaceSec / CCSDS SWG technical input; the mechanized-verification-during-standardization framing is the durable contribution.
