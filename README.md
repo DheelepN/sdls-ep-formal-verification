@@ -122,14 +122,16 @@ no command-line flag is needed; the oracle must be executable.
 ## Changes in v1.2
 
 - **The Triple-KEM and Dual-KEM models up to v1.1 were not Fig. 1.** Their second
-  message carried a spacecraft→ground key confirmation (`confirm_sat`). Fig. 1 of
-  the CANS paper, in the case without a long-term key update (which is the case
-  modelled), has no such confirmation: its only key confirmation is ground's, in
-  the third message (Table 1 lists the third packet at 16 bytes). The earlier
-  wording — confirmation "bidirectional, matching the paper's insistence on key
-  confirmation" — misread the paper. v1.2 adds `*_published` models of the
-  literal protocol and keeps the earlier models, relabelled, as the version with
-  the confirmation added.
+  message carried a spacecraft→ground key confirmation (`confirm_sat`). In Fig. 1
+  of the CANS paper, the spacecraft's confirmation is carried by the optional
+  updated long-term key in the second message, which the figure shows protected
+  under the handshake's shared secrets; ground confirms explicitly in the third
+  message. In the case *without* a long-term key update — the case modelled —
+  that payload is absent, so the second message carries no confirmation. The
+  earlier wording — confirmation "bidirectional, matching the paper's insistence
+  on key confirmation" — got that case wrong. v1.2 adds `*_published` models of
+  the literal protocol and keeps the earlier models, relabelled, as the version
+  with the confirmation added.
 - **FA-01 is restated.** As published, ground's authentication of the spacecraft
   and key agreement fail (with no key compromised), and forward secrecy fails
   once the psk leaks; with the confirmation added, everything verifies, as

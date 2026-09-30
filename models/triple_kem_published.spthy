@@ -5,10 +5,11 @@
 
   This is the literal reading of Fig. 1 of the CANS paper, for the case in
   which the optional long-term key update is skipped (the square-bracketed
-  values pk_mc_new / pk_sat_new are absent). Fig. 1 carries exactly one key
-  confirmation, in the third message, from MC to SAT; Table 1 of the paper
-  lists that third packet as 16 bytes. The second message carries only the
-  two ciphertexts.
+  values pk_mc_new / pk_sat_new are absent). In Fig. 1, SAT's key
+  confirmation is carried by the optional updated long-term key in M2; MC
+  confirms explicitly in M3 (Table 1: packet 3 is 16 bytes). Without a
+  long-term key update that payload is absent, so M2 carries only the two
+  ciphertexts and no confirmation.
 
     M1  MC -> SAT :  AEAD_psk( c_sat , pk_e )
     M2  SAT-> MC  :  AEAD_psk( c_e , c_mc )             <-- no SAT confirmation

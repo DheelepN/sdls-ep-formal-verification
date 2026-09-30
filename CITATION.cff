@@ -6,7 +6,8 @@ abstract: >-
   post-quantum extensions to the CCSDS Space Data Link Security Extended
   Procedures: the Triple-KEM/Dual-KEM key-update mechanism (Hulsing, Lange &
   Weber, CANS 2025) and E2EQSS (Wildfeuer et al., ESA 3S 2025). Triple-KEM is
-  checked both as published (Fig. 1) and with a spacecraft-to-ground key
+  checked both as published (Fig. 1, without a long-term key update, where
+  the second message carries no confirmation) and with a spacecraft-to-ground key
   confirmation added: as published, secrecy and the spacecraft's authentication
   of ground hold but ground's authentication of the spacecraft does not; with
   the confirmation, all properties verify. Makes Dual-KEM's security boundary

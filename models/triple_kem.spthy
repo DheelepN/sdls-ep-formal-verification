@@ -34,8 +34,9 @@
   fresh shared secret. Encap(pk) := aenc(~ss, pk); Decap(sk,c) := adec(c,sk).
 
   Key confirmation in this variant is bidirectional: SAT confirms in M2, MC
-  confirms in M3. The paper "always insists on key confirmations", but Fig. 1
-  carries only MC's, in M3 (Table 1: packet 3 is 16 bytes).
+  confirms in M3. The paper "always insists on key confirmations"; in Fig. 1
+  SAT's confirmation is carried by the optional updated long-term key in M2,
+  so without a long-term key update (the case modelled) M2 has none.
   ============================================================================
 */
 
