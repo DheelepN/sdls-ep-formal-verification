@@ -1,0 +1,8 @@
+# Scripts, the proof oracle and the Tamarin theories run under Linux/WSL.
+# Keep them LF on every checkout, including Windows with core.autocrlf=true,
+# or the shebang lines break ("bash\r: No such file or directory").
+*.sh     text eol=lf
+*.py     text eol=lf
+*.spthy  text eol=lf
+# Captured prover output: reproduce.sh compares it with fresh output.
+traces/*.txt  text eol=lf

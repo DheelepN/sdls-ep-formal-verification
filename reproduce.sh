@@ -25,8 +25,10 @@ fi
 mkdir -p traces/rerun
 failed=0
 
+# tr strips CR, so captured traces checked out with CRLF (Windows,
+# core.autocrlf=true) still compare equal to fresh LF output.
 verdicts() {
-    sed -n '/summary of summaries/,$p' "$1" | grep -E '\((all-traces|exists-trace)\)' | sort -u
+    tr -d '\r' < "$1" | sed -n '/summary of summaries/,$p' | grep -E '\((all-traces|exists-trace)\)' | sort -u
 }
 
 run() {
@@ -53,20 +55,34 @@ run() {
     fi
 }
 
-# FA-01: Triple-KEM. All seven lemmas should verify.
+# Each Triple-KEM / Dual-KEM model comes in two versions. The *_published
+# models give M2 exactly as in Fig. 1 of the CANS paper (no SAT -> MC
+# confirmation, the case without a long-term key update). The unsuffixed
+# models add that confirmation to M2.
+
+# FA-01, as published. mutual_authentication_MC(_psk_intact), key_agreement
+# (_psk_intact) and forward_secrecy are EXPECTED to falsify; the rest verify.
+run models/triple_kem_published.spthy
+
+# FA-01, with a SAT -> MC confirmation in M2. All seven lemmas verify.
 run models/triple_kem.spthy
 
-# FA-02: Dual-KEM. Two lemmas are EXPECTED to falsify -- that is the finding,
-# not a failure. See README.
+# FA-02: Dual-KEM, both versions. Two lemmas are EXPECTED to falsify in each --
+# that is the finding, not a failure. See README.
+run models/dual_kem_published.spthy
 run models/dual_kem.spthy
 
-# FB-01: the space-channel model. rekey_atomicity is expected to falsify and
-# desync_reachable to verify as an exists-trace, with no key reveal in the trace.
+# FB-01, both versions. rekey_atomicity is expected to falsify and
+# desync_reachable to verify, with no key reveal in the trace. The published
+# version also verifies desync_by_splice (no message lost, no key revealed).
+run models/triple_kem_space_published.spthy
 run models/triple_kem_space.spthy
 
-# FB-01 fix: the four-message variant. mc_activation_safe and
-# sat_retirement_safe verify; sat_activation_implies_mc_activation is EXPECTED
-# to falsify (a lost fourth message -- the two-generals residue).
+# FB-01 fix, both versions. mc_activation_safe and sat_retirement_safe verify;
+# sat_activation_implies_mc_activation is EXPECTED to falsify (a lost fourth
+# message -- the two-generals residue). In the published version
+# desync_by_splice is EXPECTED to find no trace: the fix closes the splice.
+run models/triple_kem_space_4pass_published.spthy
 run models/triple_kem_space_4pass.spthy
 
 # FC-01 positives. mutual_authentication_MC uses the custom proof oracle
@@ -83,5 +99,8 @@ if [ "$failed" -ne 0 ]; then
     exit 1
 fi
 echo "All verdicts match the captured output in traces/. Fresh output in traces/rerun/."
-echo "Expected falsifications: dual_kem (responder auth, PCS), triple_kem_space"
-echo "(rekey_atomicity), triple_kem_space_4pass (sat_activation_implies_mc_activation)."
+echo "Expected falsifications: triple_kem_published (MC-side authentication, key"
+echo "agreement, forward secrecy once the psk leaks), dual_kem and dual_kem_published"
+echo "(responder auth, PCS), triple_kem_space and triple_kem_space_published"
+echo "(rekey_atomicity), both 4pass models (sat_activation_implies_mc_activation),"
+echo "and triple_kem_space_4pass_published (desync_by_splice: no trace)."

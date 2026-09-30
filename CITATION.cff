@@ -5,13 +5,17 @@ abstract: >-
   Symbolic (Dolev-Yao) verification, in the Tamarin prover, of two proposed
   post-quantum extensions to the CCSDS Space Data Link Security Extended
   Procedures: the Triple-KEM/Dual-KEM key-update mechanism (Hulsing, Lange &
-  Weber, CANS 2025) and E2EQSS (Wildfeuer et al., ESA 3S 2025). Confirms
-  Triple-KEM's claimed properties, makes Dual-KEM's security boundary precise,
-  and reports FB-01: a rekey desynchronization under space channel constraints,
-  with no defined recovery, that requires no cryptographic compromise; a
-  four-message fix is verified, including the condition (the spacecraft keeps
-  the previous key) under which it is safe. Also shows E2EQSS is hybrid for
-  confidentiality but not for authentication.
+  Weber, CANS 2025) and E2EQSS (Wildfeuer et al., ESA 3S 2025). Triple-KEM is
+  checked both as published (Fig. 1) and with a spacecraft-to-ground key
+  confirmation added: as published, secrecy and the spacecraft's authentication
+  of ground hold but ground's authentication of the spacecraft does not; with
+  the confirmation, all properties verify. Makes Dual-KEM's security boundary
+  precise, and reports FB-01: a rekey desynchronization under space channel
+  constraints, with no defined recovery, that requires no cryptographic
+  compromise and holds on both versions; a four-message fix is verified on
+  both, including the condition (the spacecraft keeps the previous key) under
+  which it is safe. Also shows E2EQSS is hybrid for confidentiality but not for
+  authentication.
 type: software
 authors:
   - given-names: "N. Dheelep Sai"
@@ -28,6 +32,6 @@ keywords:
   - post-compromise security
 license: MIT
 doi: 10.5281/zenodo.22907127
-version: "1.1"
-date-released: "2026-09-27"
+version: "1.2"
+date-released: "2026-09-30"
 repository-code: "https://github.com/DheelepN/sdls-ep-formal-verification"

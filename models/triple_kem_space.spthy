@@ -3,6 +3,10 @@
   Triple-KEM under a SPACE-SPECIFIC adversary / channel model
   ============================================================================
 
+  (Like triple_kem.spthy, this file's M2 carries a SAT -> MC confirmation that
+  Fig. 1 does not; models/triple_kem_space_published.spthy is the literal
+  version. FB-01 holds in both.)
+
   This extends models/triple_kem.spthy with the operational reality of a
   space data link, which the original computational (BR') proof explicitly
   does NOT model. The Hulsing-Lange-Weber paper concedes (Sec. 3) that on

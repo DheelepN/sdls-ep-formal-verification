@@ -24,12 +24,19 @@ that will fly for decades on spacecraft that cannot easily be patched.
 
 ## Findings
 
+Every Triple-KEM and Dual-KEM result is checked on two versions of the
+protocol: **as published** (Fig. 1 of the CANS paper, without a long-term key
+update: the second message carries only the two ciphertexts) and **with a
+spacecraft→ground confirmation added to the second message**. Releases up to
+v1.1 checked only the second version and presented it as Fig. 1; see
+*Changes in v1.2*.
+
 | # | Result | Nature |
 |---|---|---|
-| FA-01 | Triple-KEM satisfies key secrecy, forward secrecy, post-compromise security (after psk compromise), injective mutual authentication in both directions, and key agreement, under a network adversary who may reveal the pre-shared key at any time and any long-term key after the session | Positive — corroborates the BR′ proof, mechanized |
-| FA-02 | Dual-KEM loses responder authentication, and once the pre-shared key is compromised loses post-compromise security entirely | Boundary made precise, with attack traces |
-| **FB-01** | **Triple-KEM permits a rekey desynchronization under space channel constraints: one lost key confirmation across a closing pass window leaves ground on the new key and the spacecraft on the old one, and the proposal defines no recovery step** | **Availability — confirmed by the proposal authors** |
-| FB-01 fix | A four-message variant — the spacecraft acknowledges activation, ground activates only on the acknowledgement, the spacecraft keeps the old key until the first frame under the new one — closes FB-01. The fourth message alone does not: a lost acknowledgement leaves the spacecraft ahead of ground | Mitigation, mechanized |
+| FA-01 | **As published:** key secrecy, post-compromise security (after psk compromise) and the spacecraft's authentication of ground hold. Ground's authentication of the spacecraft and key agreement do **not**, even with no key compromised: ground receives nothing from the spacecraft that it can check, so a genuine second message re-routed into another ground session makes ground complete a rekey the spacecraft never ran. Forward secrecy holds while the psk is secret and fails once it leaks. **With the confirmation added:** all seven lemmas verify | Precise, mechanized; the confirmed version corroborates the BR′ proof |
+| FA-02 | Dual-KEM loses responder authentication, and once the pre-shared key is compromised loses post-compromise security entirely — on both versions | Boundary made precise, with attack traces |
+| **FB-01** | **Triple-KEM permits a rekey desynchronization under space channel constraints: one lost key confirmation across a closing pass window leaves ground on the new key and the spacecraft on the old one, and the proposal defines no recovery step. Holds on both versions; the added confirmation does not remove it** | **Availability, mechanized** |
+| FB-01 fix | A four-message variant — the spacecraft acknowledges activation, ground activates only on the acknowledgement, the spacecraft keeps the old key until the first frame under the new one — closes FB-01 on both versions, and on the published one also closes the re-routing above. The fourth message alone does not: a lost acknowledgement leaves the spacecraft ahead of ground | Mitigation, mechanized |
 | FC-01 | E2EQSS is hybrid for confidentiality but **not** for authentication: its certificates sign only static keys, so a broken ML-KEM lets an adversary replay a certificate with its own ephemerals | Finding, confirmed constructively |
 
 **FB-01 is the one with operational consequences.** It requires no cryptographic
@@ -38,16 +45,17 @@ of any kind — and it is structurally invisible to a proof that establishes
 secrecy and authentication, because both-sided completion is neither of those
 properties.
 
-*Mitigation:* mission control must not activate the new SDLS master key until it
-has positive evidence the spacecraft activated it — an acknowledgement (a fourth
-message). That alone is not enough: no number of messages makes the switch
-atomic over a lossy link (the two generals problem), and a lost acknowledgement
-leaves the spacecraft on the new key and ground on the old one. The fix is safe
-when the spacecraft also **keeps the old key** until it sees traffic under the
-new one. `models/triple_kem_space_4pass.spthy` verifies exactly that: ground
-activates only after the spacecraft, and the spacecraft retires the old key only
-after ground activated, so the two always share a key whichever message is lost.
-It is a small change now and an expensive one after adoption.
+*Mitigation:* no number of messages makes the switch atomic over a lossy link
+(the two generals problem), so whatever the fix, the condition that matters is
+that the spacecraft can still process ground's traffic under **whichever key
+ground is using** — in practice, the spacecraft **keeps the old key** until it
+sees traffic under the new one. The mechanized realisation is a fourth message:
+ground activates the new key only on the spacecraft's acknowledgement, and the
+spacecraft retires the old key only on ground's first frame under the new one.
+`models/triple_kem_space_4pass.spthy` and its `_published` twin verify that
+ground activates only after the spacecraft and the spacecraft retires the old key
+only after ground activated, so the two always share a key whichever message is
+lost. It is a small change now and an expensive one after adoption.
 
 ## Layout
 
@@ -69,15 +77,19 @@ Requires Tamarin 1.12.0 and Maude 3.1.
 Or individually:
 
 ```bash
-tamarin-prover --prove models/triple_kem.spthy
-tamarin-prover --prove models/dual_kem.spthy
-tamarin-prover --prove models/triple_kem_space.spthy       # FB-01
-tamarin-prover --prove models/triple_kem_space_4pass.spthy # FB-01 fix
-tamarin-prover --prove models/e2eqss.spthy                 # uses the oracle
-tamarin-prover --prove models/e2eqss_fc01.spthy            # FC-01 attack
+tamarin-prover --prove models/triple_kem_published.spthy          # FA-01, as published
+tamarin-prover --prove models/triple_kem.spthy                    # FA-01, confirmation added
+tamarin-prover --prove models/dual_kem_published.spthy            # FA-02, as published
+tamarin-prover --prove models/dual_kem.spthy                      # FA-02, confirmation added
+tamarin-prover --prove models/triple_kem_space_published.spthy    # FB-01, as published
+tamarin-prover --prove models/triple_kem_space.spthy              # FB-01, confirmation added
+tamarin-prover --prove models/triple_kem_space_4pass_published.spthy  # fix, as published
+tamarin-prover --prove models/triple_kem_space_4pass.spthy        # fix, confirmation added
+tamarin-prover --prove models/e2eqss.spthy                        # uses the oracle
+tamarin-prover --prove models/e2eqss_fc01.spthy                   # FC-01 attack
 ```
 
-`reproduce.sh` runs all six and checks every verdict and step count against
+`reproduce.sh` runs all ten and checks every verdict and step count against
 the captured output in `traces/`; it exits non-zero on any difference.
 
 The E2EQSS model's `mutual_authentication_MC` requires the custom proof oracle
@@ -107,7 +119,32 @@ no command-line flag is needed; the oracle must be executable.
 - **E2EQSS authentication is checked in mission control's view only**
   (`mutual_authentication_MC`); the spacecraft's view is not stated as a lemma.
 
-## Changes since v1.0
+## Changes in v1.2
+
+- **The Triple-KEM and Dual-KEM models up to v1.1 were not Fig. 1.** Their second
+  message carried a spacecraft→ground key confirmation (`confirm_sat`). Fig. 1 of
+  the CANS paper, in the case without a long-term key update (which is the case
+  modelled), has no such confirmation: its only key confirmation is ground's, in
+  the third message (Table 1 lists the third packet at 16 bytes). The earlier
+  wording — confirmation "bidirectional, matching the paper's insistence on key
+  confirmation" — misread the paper. v1.2 adds `*_published` models of the
+  literal protocol and keeps the earlier models, relabelled, as the version with
+  the confirmation added.
+- **FA-01 is restated.** As published, ground's authentication of the spacecraft
+  and key agreement fail (with no key compromised), and forward secrecy fails
+  once the psk leaks; with the confirmation added, everything verifies, as
+  before. FA-02, FB-01 and the FB-01 fix hold on both versions.
+- **New lemmas**: `mc_completes_without_sat`, and the `_psk_intact` forms of
+  ground's authentication, key agreement and forward secrecy (FA-01, as
+  published); `desync_by_splice` (FB-01 and fix, as published).
+- The case *with* a long-term key update is still not modelled.
+- Wording: the FB-01 mitigation is stated as its necessary condition (the
+  spacecraft keeps the old key) with the four-message design as the mechanized
+  realisation, rather than the fourth message as the requirement.
+
+No verdict of an existing model changed; the models' comments were updated.
+
+## Changes in v1.1
 
 - **Dual-KEM `initiator_auth_holds` was vacuous in v1.0.** It required
   `Running(SAT, MC, …)` — the spacecraft's own earlier step — so it held
@@ -131,14 +168,14 @@ no command-line flag is needed; the oracle must be executable.
   post-compromise lemma is described as what it is, a special case of key
   secrecy.
 
-All other verdicts and step counts are unchanged from v1.0.
+All other verdicts and step counts were unchanged from v1.0.
 
 ## Status
 
-Phases 0–4 complete. The verification report is drafted. Courtesy notice sent
-to the Triple-KEM/Dual-KEM authors (Hülsing, Lange) and to the E2EQSS author
-(Wildfeuer) — both replied; the proposal authors confirmed FB-01. CCSDS
-Security Working Group notice in progress. Remaining: a venue decision.
+Phases 0–4 complete. The verification report is drafted. Courtesy notices were
+sent to the Triple-KEM/Dual-KEM authors and to the E2EQSS author ahead of any
+public release. CCSDS Security Working Group notice in progress. Remaining: a
+venue decision.
 
 ## Cite this work
 

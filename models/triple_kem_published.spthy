@@ -1,0 +1,217 @@
+/*
+  ============================================================================
+  Triple-KEM, AS PUBLISHED  (Hulsing, Lange, Weber, CANS 2025, Fig. 1)
+  ============================================================================
+
+  This is the literal reading of Fig. 1 of the CANS paper, for the case in
+  which the optional long-term key update is skipped (the square-bracketed
+  values pk_mc_new / pk_sat_new are absent). Fig. 1 carries exactly one key
+  confirmation, in the third message, from MC to SAT; Table 1 of the paper
+  lists that third packet as 16 bytes. The second message carries only the
+  two ciphertexts.
+
+    M1  MC -> SAT :  AEAD_psk( c_sat , pk_e )
+    M2  SAT-> MC  :  AEAD_psk( c_e , c_mc )             <-- no SAT confirmation
+    M3  MC -> SAT :  confirm_mc
+
+  models/triple_kem.spthy is the same protocol with a SAT -> MC confirmation
+  added to M2. Earlier releases of this artifact presented that variant as
+  the protocol of Fig. 1; it is not. Both are kept so the effect of that one
+  message element is visible lemma by lemma.
+
+  Everything else (KEM abstraction, revealable psk, adversary) is identical
+  to models/triple_kem.spthy.
+  ============================================================================
+*/
+
+theory triple_kem_published
+begin
+
+builtins: asymmetric-encryption, symmetric-encryption, hashing
+
+functions: kdf/1
+
+rule Register_ltk:
+    [ Fr(~ltk) ]
+  --[ OnlyOnce($A) ]->
+    [ !Ltk($A, ~ltk), !Pk($A, pk(~ltk)), Out(pk(~ltk)) ]
+
+rule Register_psk:
+    [ Fr(~psk) ]
+  --[ PskInit($MC, $SAT) ]->
+    [ !Psk($MC, $SAT, ~psk) ]
+
+rule Reveal_ltk:
+    [ !Ltk($A, ltk) ] --[ LtkReveal($A) ]-> [ Out(ltk) ]
+
+rule Reveal_psk:
+    [ !Psk($MC, $SAT, psk) ] --[ PskReveal($MC, $SAT) ]-> [ Out(psk) ]
+
+rule MC_1:
+    let pke   = pk(~ske)
+        c_sat = aenc(~ss_sat, pkSAT)
+        m1    = senc(<'pl1', c_sat, pke>, psk)
+    in
+    [ !Ltk($MC, ltkMC)
+    , !Pk($SAT, pkSAT)
+    , !Psk($MC, $SAT, psk)
+    , Fr(~ss_sat)
+    , Fr(~ske)
+    , Fr(~sid) ]
+  --[ StartMC($MC, $SAT, ~sid) ]->
+    [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke)
+    , Out(<'M1', m1>) ]
+
+// M2 as published: the two ciphertexts under the psk, nothing else.
+rule SAT_1:
+    let ss_sat = adec(c_sat, ltkSAT)
+        c_e    = aenc(~ss_e, pke)
+        c_mc   = aenc(~ss_mc, pkMC)
+        th     = h(<c_sat, pke, c_e, c_mc>)
+        k      = kdf(<psk, ss_sat, ~ss_e, ~ss_mc, th>)
+        m2     = senc(<'pl2', c_e, c_mc>, psk)
+    in
+    [ !Ltk($SAT, ltkSAT)
+    , !Pk($MC, pkMC)
+    , !Psk($MC, $SAT, psk)
+    , In(<'M1', senc(<'pl1', c_sat, pke>, psk)>)
+    , Fr(~ss_e)
+    , Fr(~ss_mc)
+    , Fr(~sidS) ]
+  --[ Running(  $SAT, $MC, <'SATtoMC', k, th> )
+    , RunningKey($SAT, $MC, k)
+    , Honest($SAT), Honest($MC) ]->
+    [ St_SAT_1($SAT, $MC, ~sidS, k, th, c_sat, pke, c_e, c_mc)
+    , Out(<'M2', m2>) ]
+
+// MC has nothing from SAT to check: it derives k, confirms, and completes.
+rule MC_2:
+    let th     = h(<c_sat, pke, c_e, c_mc>)
+        ss_e   = adec(c_e, ~ske)
+        ss_mc  = adec(c_mc, ltkMC)
+        k      = kdf(<psk, ~ss_sat, ss_e, ss_mc, th>)
+        conf_m = senc(<'mc', th>, k)
+    in
+    [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke)
+    , In(<'M2', senc(<'pl2', c_e, c_mc>, psk)>) ]
+  --[ Running(  $MC, $SAT, <'MCtoSAT', k, th> )
+    , Commit(   $MC, $SAT, <'MCtoSAT', k, th> )
+    , CommitKey($MC, $SAT, k)
+    , AcceptMC( $MC, $SAT, k)
+    , Secret(k)
+    , Honest($MC), Honest($SAT) ]->
+    [ Out(<'M3', conf_m>)
+    , !SessKey($MC, $SAT, k) ]
+
+rule SAT_2:
+    [ St_SAT_1($SAT, $MC, ~sidS, k, th, c_sat, pke, c_e, c_mc)
+    , In(<'M3', conf_m>) ]
+  --[ Eq(conf_m, senc(<'mc', th>, k))
+    , Commit(   $SAT, $MC, <'SATtoMC', k, th> )
+    , CommitKey($SAT, $MC, k)
+    , AcceptSat($SAT, $MC, k)
+    , Secret(k)
+    , Honest($SAT), Honest($MC) ]->
+    [ !SessKey($SAT, $MC, k) ]
+
+restriction Equality:
+    "All x y #i. Eq(x, y) @ #i ==> x = y"
+
+restriction OnlyOnce:
+    "All A #i #j. OnlyOnce(A) @ #i & OnlyOnce(A) @ #j ==> #i = #j"
+
+lemma executable:
+    exists-trace
+    "Ex MC SAT k #a #b.
+        AcceptMC(MC, SAT, k) @ #a
+      & AcceptSat(SAT, MC, k) @ #b"
+
+// Unchanged from triple_kem.spthy.
+lemma key_secrecy:
+    "All k #i.
+        Secret(k) @ #i
+      ==>
+        ( not (Ex #j. K(k) @ #j) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i )"
+
+lemma forward_secrecy:
+    "All k #i #j.
+        Secret(k) @ #i & K(k) @ #j
+      ==>
+        ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+// Forward secrecy with the psk never revealed. Separates the two reasons the
+// lemma above can fail.
+lemma forward_secrecy_psk_intact:
+    "All k #i #j.
+        Secret(k) @ #i & K(k) @ #j
+      & not (Ex M S #p. PskReveal(M, S) @ #p)
+      ==>
+        ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+lemma post_compromise_security:
+    "All k #i.
+        Secret(k) @ #i & (Ex MC SAT #p. PskReveal(MC, SAT) @ #p)
+      ==>
+        ( not (Ex #j. K(k) @ #j) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i )"
+
+// Explicit witness: MC completes a rekey that SAT never ran, with no key of
+// any kind revealed.
+lemma mc_completes_without_sat:
+    exists-trace
+    "Ex MC SAT k th #i.
+        Commit(MC, SAT, <'MCtoSAT', k, th>) @ #i
+      & not (Ex #j. Running(SAT, MC, <'SATtoMC', k, th>) @ #j)
+      & not (Ex A #r. LtkReveal(A) @ #r)
+      & not (Ex M S #p. PskReveal(M, S) @ #p)"
+
+// MC's view, stated exactly as in triple_kem.spthy.
+lemma mutual_authentication_MC:
+    "All MC SAT k th #i.
+        Commit(MC, SAT, <'MCtoSAT', k, th>) @ #i
+      ==>
+        ( Ex #j. Running(SAT, MC, <'SATtoMC', k, th>) @ #j & #j < #i
+          & not (Ex MC2 SAT2 #i2.
+                 Commit(MC2, SAT2, <'MCtoSAT', k, th>) @ #i2 & not(#i2 = #i)) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+// MC's view again, with the psk never revealed: does the psk alone give MC
+// explicit evidence that SAT took part in this session?
+lemma mutual_authentication_MC_psk_intact:
+    "All MC SAT k th #i.
+        Commit(MC, SAT, <'MCtoSAT', k, th>) @ #i
+      & not (Ex M S #p. PskReveal(M, S) @ #p)
+      ==>
+        ( Ex #j. Running(SAT, MC, <'SATtoMC', k, th>) @ #j & #j < #i
+          & not (Ex MC2 SAT2 #i2.
+                 Commit(MC2, SAT2, <'MCtoSAT', k, th>) @ #i2 & not(#i2 = #i)) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+// SAT's view is carried by MC's confirmation in M3, which the published
+// protocol has. Stated exactly as in triple_kem.spthy.
+lemma mutual_authentication_SAT:
+    "All SAT MC k th #i.
+        Commit(SAT, MC, <'SATtoMC', k, th>) @ #i
+      ==>
+        ( Ex #j. Running(MC, SAT, <'MCtoSAT', k, th>) @ #j & #j < #i
+          & not (Ex SAT2 MC2 #i2.
+                 Commit(SAT2, MC2, <'SATtoMC', k, th>) @ #i2 & not(#i2 = #i)) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+lemma key_agreement:
+    "All MC SAT k #i.
+        AcceptMC(MC, SAT, k) @ #i
+      ==>
+        ( Ex #j. RunningKey(SAT, MC, k) @ #j )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+lemma key_agreement_psk_intact:
+    "All MC SAT k #i.
+        AcceptMC(MC, SAT, k) @ #i
+      & not (Ex M S #p. PskReveal(M, S) @ #p)
+      ==>
+        ( Ex #j. RunningKey(SAT, MC, k) @ #j )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
+
+end

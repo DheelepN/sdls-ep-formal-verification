@@ -1,0 +1,163 @@
+/*
+  ============================================================================
+  Triple-KEM under the space channel model, AS PUBLISHED (CANS 2025, Fig. 1)
+  ============================================================================
+
+  Identical to models/triple_kem_space.spthy except for M2, which here is the
+  literal Fig. 1 message for the case without a long-term key update: the two
+  ciphertexts under the psk, with no SAT -> MC confirmation. MC therefore has
+  nothing from SAT to check before it activates the new key.
+
+    M1  MC -> SAT :  AEAD_psk( c_sat , pk_e )
+    M2  SAT-> MC  :  AEAD_psk( c_e , c_mc )             (pass opens)
+    M3  MC -> SAT :  confirm_mc                        MC activates on sending
+
+  The FB-01 lemmas are unchanged, so the published protocol can be compared
+  line by line with the variant. One lemma is added: desync_by_splice, which
+  asks whether MC can activate a key SAT never derived at all, with no message
+  lost and no key compromised.
+  ============================================================================
+*/
+
+theory triple_kem_space_published
+begin
+
+builtins: asymmetric-encryption, symmetric-encryption, hashing
+
+functions: kdf/1
+
+rule Register_ltk:
+    [ Fr(~ltk) ]
+  --[ OnlyOnce($A) ]->
+    [ !Ltk($A, ~ltk), !Pk($A, pk(~ltk)), Out(pk(~ltk)) ]
+
+rule Register_psk:
+    [ Fr(~psk) ]
+  --[ PskInit($MC, $SAT) ]->
+    [ !Psk($MC, $SAT, ~psk) ]
+
+rule Reveal_ltk:
+    [ !Ltk($A, ltk) ] --[ LtkReveal($A) ]-> [ Out(ltk) ]
+
+rule Reveal_psk:
+    [ !Psk($MC, $SAT, psk) ] --[ PskReveal($MC, $SAT) ]-> [ Out(psk) ]
+
+rule MC_1:
+    let pke   = pk(~ske)
+        c_sat = aenc(~ss_sat, pkSAT)
+        m1    = senc(<'pl1', c_sat, pke>, psk)
+    in
+    [ !Ltk($MC, ltkMC)
+    , !Pk($SAT, pkSAT)
+    , !Psk($MC, $SAT, psk)
+    , Fr(~ss_sat)
+    , Fr(~ske)
+    , Fr(~sid) ]
+  --[ StartMC($MC, $SAT, ~sid) ]->
+    [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke)
+    , Out(<'M1', m1>) ]
+
+// SAT sends the published M2 and opens a contact/pass window.
+rule SAT_1:
+    let ss_sat = adec(c_sat, ltkSAT)
+        c_e    = aenc(~ss_e, pke)
+        c_mc   = aenc(~ss_mc, pkMC)
+        th     = h(<c_sat, pke, c_e, c_mc>)
+        k      = kdf(<psk, ss_sat, ~ss_e, ~ss_mc, th>)
+        m2     = senc(<'pl2', c_e, c_mc>, psk)
+    in
+    [ !Ltk($SAT, ltkSAT)
+    , !Pk($MC, pkMC)
+    , !Psk($MC, $SAT, psk)
+    , In(<'M1', senc(<'pl1', c_sat, pke>, psk)>)
+    , Fr(~ss_e)
+    , Fr(~ss_mc)
+    , Fr(~sidS) ]
+  --[ Running($SAT, $MC, <'SATtoMC', k, th>)
+    , Honest($SAT), Honest($MC) ]->
+    [ St_SAT_1($SAT, $MC, ~sidS, k, th)
+    , Contact($SAT, ~sidS)
+    , Out(<'M2', m2>) ]
+
+// MC receives M2, has nothing from SAT to check, ACTIVATES k, sends M3.
+rule MC_2:
+    let th     = h(<c_sat, pke, c_e, c_mc>)
+        ss_e   = adec(c_e, ~ske)
+        ss_mc  = adec(c_mc, ltkMC)
+        k      = kdf(<psk, ~ss_sat, ss_e, ss_mc, th>)
+        conf_m = senc(<'mc', th>, k)
+    in
+    [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ss_sat, ~ske, c_sat, pke)
+    , In(<'M2', senc(<'pl2', c_e, c_mc>, psk)>) ]
+  --[ Commit($MC, $SAT, <'MCtoSAT', k, th>)
+    , KeyActiveMC($MC, $SAT, k)
+    , Secret(k)
+    , Honest($MC), Honest($SAT) ]->
+    [ Out(<'M3', conf_m>)
+    , !SessKey($MC, $SAT, k) ]
+
+rule SAT_2:
+    [ St_SAT_1($SAT, $MC, ~sidS, k, th)
+    , Contact($SAT, ~sidS)
+    , In(<'M3', conf_m>) ]
+  --[ Eq(conf_m, senc(<'mc', th>, k))
+    , KeyActiveSat($SAT, $MC, k)
+    , Secret(k)
+    , Honest($SAT), Honest($MC) ]->
+    [ !SessKey($SAT, $MC, k) ]
+
+rule Pass_ends:
+    [ Contact($SAT, ~sidS) ] --[ PassEnded($SAT, ~sidS) ]-> [ ]
+
+restriction Equality:
+    "All x y #i. Eq(x, y) @ #i ==> x = y"
+
+restriction OnlyOnce:
+    "All A #i #j. OnlyOnce(A) @ #i & OnlyOnce(A) @ #j ==> #i = #j"
+
+lemma executable:
+    exists-trace
+    "Ex MC SAT k #a #b.
+        KeyActiveMC(MC, SAT, k) @ #a
+      & KeyActiveSat(SAT, MC, k) @ #b"
+
+lemma rekey_atomicity:
+    "All MC SAT k #i.
+        KeyActiveMC(MC, SAT, k) @ #i
+      ==>
+        ( Ex #j. KeyActiveSat(SAT, MC, k) @ #j )"
+
+lemma desync_reachable:
+    exists-trace
+    "Ex MC SAT k sidS #i #e.
+        KeyActiveMC(MC, SAT, k) @ #i
+      & PassEnded(SAT, sidS) @ #e
+      & not (Ex #j. KeyActiveSat(SAT, MC, k) @ #j)
+      & not (Ex A #r. LtkReveal(A) @ #r)
+      & not (Ex M S #p. PskReveal(M, S) @ #p)"
+
+// MC activates a key that SAT never derived in any session: no pass ends, no
+// message is lost, no key is revealed. The adversary only re-routes a genuine
+// M2 into a different MC session.
+lemma desync_by_splice:
+    exists-trace
+    "Ex MC SAT k #i.
+        KeyActiveMC(MC, SAT, k) @ #i
+      & not (Ex th #j. Running(SAT, MC, <'SATtoMC', k, th>) @ #j)
+      & not (Ex S sidS #e. PassEnded(S, sidS) @ #e)
+      & not (Ex A #r. LtkReveal(A) @ #r)
+      & not (Ex M S #p. PskReveal(M, S) @ #p)"
+
+lemma replay_resistance_timing_independent:
+    "All SAT MC k #i #j.
+        KeyActiveSat(SAT, MC, k) @ #i & KeyActiveSat(SAT, MC, k) @ #j
+      ==> #i = #j"
+
+lemma key_secrecy:
+    "All k #i.
+        Secret(k) @ #i
+      ==>
+        ( not (Ex #j. K(k) @ #j) )
+      | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i )"
+
+end

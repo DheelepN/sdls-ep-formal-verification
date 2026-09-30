@@ -14,9 +14,13 @@
   A pre-shared key (psk) authenticated-encrypts the flights (defence in depth);
   the psk MAY be compromised or absent, so security must rest on the KEMs.
 
-  Messages (Fig. 1 of the paper, "with psk" case):
+  Messages. This is a VARIANT of Fig. 1 of the paper ("with psk" case, no
+  long-term key update): it adds a SAT -> MC confirmation, confirm_sat, to M2.
+  Fig. 1 itself has no confirmation in M2 in that case; the literal protocol
+  is models/triple_kem_published.spthy. Releases up to v1.1 presented this
+  file as Fig. 1, which it is not.
     M1  MC -> SAT :  AEAD_psk( c_sat , pk_e )
-    M2  SAT-> MC  :  AEAD_psk( c_e , c_mc , confirm_sat )
+    M2  SAT-> MC  :  AEAD_psk( c_e , c_mc , confirm_sat )   <-- added
     M3  MC -> SAT :  confirm_mc
 
   where
@@ -29,8 +33,9 @@
   KEM abstraction: an IND-CCA KEM is modelled as public-key encryption of a
   fresh shared secret. Encap(pk) := aenc(~ss, pk); Decap(sk,c) := adec(c,sk).
 
-  Key confirmation is bidirectional (the paper "always insists on key
-  confirmations"): SAT confirms in M2, MC confirms in M3.
+  Key confirmation in this variant is bidirectional: SAT confirms in M2, MC
+  confirms in M3. The paper "always insists on key confirmations", but Fig. 1
+  carries only MC's, in M3 (Table 1: packet 3 is 16 bytes).
   ============================================================================
 */
 

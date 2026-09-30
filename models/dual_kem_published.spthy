@@ -1,39 +1,24 @@
 /*
   ============================================================================
-  Dual-KEM key-update mechanism for SDLS  (Hulsing, Lange, Weber, CANS 2025)
+  Dual-KEM, AS PUBLISHED  (Hulsing, Lange, Weber, CANS 2025, Sec. 2.1)
   ============================================================================
 
-  Dual-KEM is Triple-KEM with the challenge to the responder's long-term key
-  (c_sat) removed. The paper states plainly that Dual-KEM "does not itself
-  guarantee any authenticity of the responder" and must only be used where the
-  responder's authenticity is guaranteed out of band (e.g. by the ground
-  station rather than mission control).
+  The paper defines Dual-KEM as Triple-KEM without the ciphertext to the
+  responder's long-term key and without the responder's optional updated
+  long-term key. On the literal Fig. 1 reading, M2 therefore carries only the
+  two ciphertexts, with no SAT -> MC confirmation.
 
-  This model does NOT assume that out-of-band authentication. Its purpose is to
-  make precise, mechanically, what Dual-KEM loses relative to Triple-KEM:
-
-    * With a secret psk, the flights are protected and the key is safe.
-    * Once the psk is revealed (exactly the post-compromise scenario), the
-      responder's long-term key no longer contributes to the derived key.
-      The Dolev-Yao adversary can encapsulate to the public keys itself and
-      impersonate the satellite, so the key MC derives is shared with the
-      adversary and post-compromise security is lost.
-
-  Messages. As in triple_kem.spthy, this VARIANT adds a SAT -> MC confirmation
-  to M2 that the published protocol does not carry; the literal version is
-  models/dual_kem_published.spthy, and FA-02 holds identically in both.
     M1  MC -> SAT :  AEAD_psk( pk_e )
-    M2  SAT-> MC  :  AEAD_psk( c_e , c_mc , confirm_sat )   <-- added
+    M2  SAT-> MC  :  AEAD_psk( c_e , c_mc )
     M3  MC -> SAT :  confirm_mc
 
-    c_e  = Encap(pk_e)     -- ephemeral encapsulation
-    c_mc = Encap(pk_mc)    -- challenges MC's long-term key (authenticates MC)
-    th   = H(pk_e, c_e, c_mc)
-    k    = KDF(psk, ss_e, ss_mc, th)          -- note: no ss_sat term
+  Identical to models/dual_kem.spthy except for M2. FA-02's two falsifications
+  can only get easier without the confirmation; the two lemmas that verify in
+  dual_kem.spthy are re-checked here rather than assumed.
   ============================================================================
 */
 
-theory dual_kem
+theory dual_kem_published
 begin
 
 builtins: asymmetric-encryption, symmetric-encryption, hashing
@@ -56,7 +41,6 @@ rule Reveal_ltk:
 rule Reveal_psk:
     [ !Psk($MC, $SAT, psk) ] --[ PskReveal($MC, $SAT) ]-> [ Out(psk) ]
 
-// M1: MC ships only the ephemeral public key (no challenge to SAT).
 rule MC_1:
     let pke = pk(~ske)
         m1  = senc(<'pl1', pke>, psk)
@@ -75,8 +59,7 @@ rule SAT_1:
         c_mc   = aenc(~ss_mc, pkMC)
         th     = h(<pke, c_e, c_mc>)
         k      = kdf(<psk, ~ss_e, ~ss_mc, th>)
-        conf_s = senc(<'sc', th>, k)
-        m2     = senc(<'pl2', c_e, c_mc, conf_s>, psk)
+        m2     = senc(<'pl2', c_e, c_mc>, psk)
     in
     [ !Ltk($SAT, ltkSAT)
     , !Pk($MC, pkMC)
@@ -99,9 +82,8 @@ rule MC_2:
         conf_m = senc(<'mc', th>, k)
     in
     [ St_MC_1($MC, $SAT, ~sid, ltkMC, psk, ~ske, pke)
-    , In(<'M2', senc(<'pl2', c_e, c_mc, conf_s>, psk)>) ]
-  --[ Eq(conf_s, senc(<'sc', th>, k))
-    , Running(  $MC, $SAT, <'MCtoSAT', k, th> )
+    , In(<'M2', senc(<'pl2', c_e, c_mc>, psk)>) ]
+  --[ Running(  $MC, $SAT, <'MCtoSAT', k, th> )
     , Commit(   $MC, $SAT, <'MCtoSAT', k, th> )
     , CommitKey($MC, $SAT, k)
     , AcceptMC( $MC, $SAT, k)
@@ -132,14 +114,6 @@ lemma executable:
         AcceptMC(MC, SAT, k) @ #a
       & AcceptSat(SAT, MC, k) @ #b"
 
-// Initiator authentication is retained: MC is authenticated to SAT through
-// c_mc, so this should still hold -- and it should hold even once the psk is
-// revealed, because only MC's long-term key recovers ss_mc, which feeds k and
-// hence MC's confirmation in M3.
-//
-// (Earlier versions of this lemma required Running(SAT, MC, ...), i.e. SAT's
-// OWN earlier step, which SAT_2 always has from its state; the lemma was
-// therefore vacuous. It now requires MC's Running event.)
 lemma initiator_auth_holds:
     "All SAT MC k th #i.
         Commit(SAT, MC, <'SATtoMC', k, th>) @ #i
@@ -147,8 +121,6 @@ lemma initiator_auth_holds:
         ( Ex #j. Running(MC, SAT, <'MCtoSAT', k, th>) @ #j & #j < #i )
       | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
 
-// Responder authentication is expected to FAIL: MC cannot authenticate SAT.
-// Tamarin should falsify this and return an attack trace.
 lemma responder_auth_expected_fail:
     "All MC SAT k th #i.
         Commit(MC, SAT, <'MCtoSAT', k, th>) @ #i
@@ -156,7 +128,6 @@ lemma responder_auth_expected_fail:
         ( Ex #j. Running(SAT, MC, <'SATtoMC', k, th>) @ #j & #j < #i )
       | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i & #r < #i )"
 
-// Key secrecy WITHOUT allowing psk compromise: should hold.
 lemma key_secrecy_psk_intact:
     "All k #i.
         Secret(k) @ #i & not (Ex M S #p. PskReveal(M, S) @ #p)
@@ -164,8 +135,6 @@ lemma key_secrecy_psk_intact:
         ( not (Ex #j. K(k) @ #j) )
       | ( Ex A #r. LtkReveal(A) @ #r & Honest(A) @ #i )"
 
-// Post-compromise security: expected to FAIL for Dual-KEM. Once the psk leaks,
-// the unauthenticated responder lets the adversary compute the new key.
 lemma post_compromise_security_expected_fail:
     "All k #i.
         Secret(k) @ #i & (Ex MC SAT #p. PskReveal(MC, SAT) @ #p)
